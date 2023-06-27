@@ -58,6 +58,16 @@ public class CaseController {
         batch.getBucket("batch_k_b").setAsync("batch_v_b");
         batch.getBucket("batch_k_b").expireAsync(20, TimeUnit.SECONDS);
         batch.execute();
+
+        RLock lock1 = client.getLock("lock_1");
+        RLock lock2 = client.getLock("lock_2");
+        RLock lock3 = client.getLock("lock_3");
+        RLock multiLock = client.getMultiLock(lock1, lock2, lock3);
+        try {
+            multiLock.lock(10L, TimeUnit.SECONDS);
+        } finally {
+            multiLock.unlock();
+        }
         return "Success";
     }
 

@@ -51,6 +51,21 @@ segmentItems:
       - {key: cache.instance, value: not null}
       - {key: cache.cmd, value: BATCH_EXECUTE}
       skipAnalysis: 'false'
+    - operationName: Redisson/MultiLock
+      parentSpanId: 0
+      spanId: 3
+      spanLayer: Cache
+      startTime: not null
+      endTime: not null
+      componentId: 56
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - { key: cache.type, value: Redis }
+        - { key: lock_name, value: lock_1,lock_2,lock_3 }
+        - { key: lease_time, value: 20000 }
+      skipAnalysis: 'false'
     - operationName: GET:/case/redisson-case
       parentSpanId: -1
       spanId: 0
