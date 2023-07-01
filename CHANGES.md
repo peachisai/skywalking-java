@@ -137,6 +137,9 @@ Callable {
 * Fix the conflict between the logging kernel and the JDK threadpool plugin.
 * Fix the thread safety bug of finishing operation for the span named "SpringCloudGateway/sendRequest"
 * Fix NPE in guava-eventbus-plugin.
+* Add WebSphere Liberty 23.x plugin
+* Add Plugin to support aerospike Java client
+* Add ClickHouse parsing to the jdbc-common plugin.
 
 #### Documentation
 
