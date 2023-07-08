@@ -88,7 +88,7 @@ public class KafkaServiceManagementServiceClient implements BootService, Runnabl
                                                             .setService(Config.Agent.SERVICE_NAME)
                                                             .setServiceInstance(Config.Agent.INSTANCE_NAME)
                                                             .addAllProperties(OSUtil.buildOSInfo(
-                                                                Config.OsInfo.IPV4_LIST_SIZE))
+                                                                Config.OsInfo.IP_LIST_SIZE))
                                                             .addAllProperties(SERVICE_INSTANCE_PROPERTIES)
                                                             .addAllProperties(LoadedLibraryCollector.buildJVMInfo())
                                                             .build();

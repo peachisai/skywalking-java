@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.agent.core.os;
 
 import java.lang.management.ManagementFactory;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -34,6 +35,7 @@ public class OSUtil {
     private static volatile String OS_NAME;
     private static volatile String HOST_NAME;
     private static volatile List<String> IPV4_LIST;
+    private static volatile List<String> IPV6_LIST;
     private static volatile int PROCESS_NO = 0;
 
     public static String getOsName() {
@@ -83,12 +85,44 @@ public class OSUtil {
         return IPV4_LIST;
     }
 
-    public static String getIPV4() {
+    public static List<String> getAllIPV6() {
+        if (IPV6_LIST == null) {
+            IPV6_LIST = new ArrayList<>();
+
+            try {
+                Enumeration<NetworkInterface> interfs = NetworkInterface.getNetworkInterfaces();
+                while (interfs.hasMoreElements()) {
+                    NetworkInterface networkInterface = interfs.nextElement();
+                    Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+                    while (inetAddresses.hasMoreElements()) {
+                        InetAddress address = inetAddresses.nextElement();
+                        if (address instanceof Inet6Address) {
+                            String addressStr = address.getHostAddress();
+                            if ("0:0:0:0:0:0:0:1".equals(addressStr)) {
+                                continue;
+                            } else if ("localhost".equals(addressStr)) {
+                                continue;
+                            } else if (addressStr.startsWith("fe80")) {
+                                continue;
+                            }
+                            IPV6_LIST.add(addressStr);
+                        }
+                    }
+                }
+            } catch (SocketException e) {
+
+            }
+        }
+        return IPV6_LIST;
+    }
+
+    public static String getIp() {
         final List<String> allIPV4 = getAllIPV4();
         if (allIPV4.size() > 0) {
             return allIPV4.get(0);
         } else {
-            return "no-hostname";
+            List<String> allIPV6 = getAllIPV6();
+            return allIPV6.size() > 0 ? allIPV6.get(0) : "no-hostname";
         }
     }
 
@@ -103,7 +137,7 @@ public class OSUtil {
         return PROCESS_NO;
     }
 
-    public static List<KeyStringValuePair> buildOSInfo(int ipv4Size) {
+    public static List<KeyStringValuePair> buildOSInfo(int ipSize) {
         List<KeyStringValuePair> osInfo = new ArrayList<>();
 
         String osName = getOsName();
@@ -116,11 +150,21 @@ public class OSUtil {
         }
         List<String> allIPV4 = getAllIPV4();
         if (allIPV4.size() > 0) {
-            if (allIPV4.size() > ipv4Size) {
-                allIPV4 = allIPV4.subList(0, ipv4Size);
+            if (allIPV4.size() > ipSize) {
+                allIPV4 = allIPV4.subList(0, ipSize);
             }
             for (String ipv4 : allIPV4) {
                 osInfo.add(KeyStringValuePair.newBuilder().setKey("ipv4").setValue(ipv4).build());
+            }
+        } else {
+            List<String> allIPV6 = getAllIPV6();
+            if (allIPV6.size() > 0) {
+                if (allIPV6.size() > ipSize) {
+                    allIPV6 = allIPV6.subList(0, ipSize);
+                }
+                for (String ipv6 : allIPV6) {
+                    osInfo.add(KeyStringValuePair.newBuilder().setKey("ipv6").setValue(ipv6).build());
+                }
             }
         }
         osInfo.add(KeyStringValuePair.newBuilder().setKey("Process No.").setValue(getProcessNo() + "").build());

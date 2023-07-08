@@ -34,7 +34,7 @@ public class ServiceInstanceGenerator implements BootService {
             return;
         }
 
-        Config.Agent.INSTANCE_NAME = UUID.randomUUID().toString().replaceAll("-", "") + "@" + OSUtil.getIPV4();
+        Config.Agent.INSTANCE_NAME = UUID.randomUUID().toString().replaceAll("-", "") + "@" + OSUtil.getIp();
     }
 
     @Override

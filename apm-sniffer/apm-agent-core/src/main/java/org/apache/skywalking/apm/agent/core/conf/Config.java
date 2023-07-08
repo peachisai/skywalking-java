@@ -180,7 +180,7 @@ public class Config {
         /**
          * Limit the length of the ipv4 list size.
          */
-        public static int IPV4_LIST_SIZE = 10;
+        public static int IP_LIST_SIZE = 10;
     }
 
     public static class Collector {
