@@ -18,7 +18,6 @@ Release Notes.
 * Support collecting ZGC memory pool metrics. Require OAP 9.7.0 to support these new metrics.
 * Add a netty-http plugin
 
-
 #### Documentation
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/194?closed=1)
