@@ -19,7 +19,7 @@ segmentItems:
     segments:
       - segmentId:  not null
         spans:
-          - operationName: GET:/virtual-thread-executor-scenario/virtual-thread-executor-case
+          - operationName: GET:/case
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -48,7 +48,7 @@ segmentItems:
             tags:
               - {key: carrier.thread, value: not null}
             refs:
-              - { parentEndpoint: 'GET:/virtualThreadExecutor-scenario', networkAddress: '', refType: CrossThread,
+              - { parentEndpoint: 'GET:/case', networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
                     null, parentService: jdk-virtual-thread-executor-scenario, traceId: not null }
           - operationName: /apache/skywalking
@@ -61,6 +61,7 @@ segmentItems:
             isError: false
             spanType: Exit
             peer: github.com:443
+            skipAnalysis: false
             tags:
               - {key: url, value: 'https://github.com/apache/skywalking'}
               - {key: http.method, value: GET}
