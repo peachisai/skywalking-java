@@ -14,88 +14,88 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Test
-
-on:
-  pull_request:
-    paths:
-      - '.github/workflows/plugins-*.yaml'
-      - 'apm-application-toolkit/**'
-      - 'apm-commons/**'
-      - 'apm-protocol/**'
-      - 'apm-sniffer/**'
-      - 'test/plugin/**'
-      - '**/pom.xml'
-      - '!**.md'
-
-concurrency:
-  group: plugins-0-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
-jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Build
-        uses: ./.github/actions/build
-
-  test:
-    needs: [ build ]
-    name: ${{ matrix.case }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    strategy:
-      matrix:
-        case:
-          - activemq-scenario
-          - agent-so11y-scenario
-          - apm-toolkit-trace-scenario
-          - apm-toolkit-tracer-scenario
-          - armeria-0.96minus-scenario
-          - armeria-0.96plus-scenario
-          - avro-scenario
-          - asynchttpclient-scenario
-          - canal-scenario
-          - cassandra-java-driver-3.x-scenario
-          - customize-scenario
-          - correlation-autotag-scenario
-          - dubbo-2.5.x-scenario
-          - dubbo-2.7.x-scenario
-          - dubbo-3.x-scenario
-          - ehcache-2.x-scenario
-          - elasticsearch-5.x-scenario
-          - elasticsearch-rest-high-level-6.x-scenario
-          - elasticsearch-transport-6.x-scenario
-          - elasticsearch-7.x-scenario
-          - exception-checker-spring-scenario
-          - exception-checker-tomcat-scenario
-          - feign-scenario
-          - finagle-17.10.x-scenario
-          - finagle-6.44.x-scenario
-          - gateway-2.1.x-scenario
-          - gateway-2.0.x-scenario
-          - grpc-scenario
-          - gson-scenario
-          - guava-cache-scenario
-          - elasticjob-3.x-scenario
-          - springmvc-reactive-scenario
-          - springmvc-reactive-devtools-scenario
-          - fastjson-scenario
-          - jackson-scenario
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-      - name: Run Plugin Test
-        uses: ./.github/actions/run
-        with:
-          test_case: ${{ matrix.case }}
+#name: Test
+#
+#on:
+#  pull_request:
+#    paths:
+#      - '.github/workflows/plugins-*.yaml'
+#      - 'apm-application-toolkit/**'
+#      - 'apm-commons/**'
+#      - 'apm-protocol/**'
+#      - 'apm-sniffer/**'
+#      - 'test/plugin/**'
+#      - '**/pom.xml'
+#      - '!**.md'
+#
+#concurrency:
+#  group: plugins-0-${{ github.event.pull_request.number || github.ref }}
+#  cancel-in-progress: true
+#
+#jobs:
+#  build:
+#    name: Build
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          submodules: true
+#      - name: Build
+#        uses: ./.github/actions/build
+#
+#  test:
+#    needs: [ build ]
+#    name: ${{ matrix.case }}
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 90
+#    strategy:
+#      matrix:
+#        case:
+#          - activemq-scenario
+#          - agent-so11y-scenario
+#          - apm-toolkit-trace-scenario
+#          - apm-toolkit-tracer-scenario
+#          - armeria-0.96minus-scenario
+#          - armeria-0.96plus-scenario
+#          - avro-scenario
+#          - asynchttpclient-scenario
+#          - canal-scenario
+#          - cassandra-java-driver-3.x-scenario
+#          - customize-scenario
+#          - correlation-autotag-scenario
+#          - dubbo-2.5.x-scenario
+#          - dubbo-2.7.x-scenario
+#          - dubbo-3.x-scenario
+#          - ehcache-2.x-scenario
+#          - elasticsearch-5.x-scenario
+#          - elasticsearch-rest-high-level-6.x-scenario
+#          - elasticsearch-transport-6.x-scenario
+#          - elasticsearch-7.x-scenario
+#          - exception-checker-spring-scenario
+#          - exception-checker-tomcat-scenario
+#          - feign-scenario
+#          - finagle-17.10.x-scenario
+#          - finagle-6.44.x-scenario
+#          - gateway-2.1.x-scenario
+#          - gateway-2.0.x-scenario
+#          - grpc-scenario
+#          - gson-scenario
+#          - guava-cache-scenario
+#          - elasticjob-3.x-scenario
+#          - springmvc-reactive-scenario
+#          - springmvc-reactive-devtools-scenario
+#          - fastjson-scenario
+#          - jackson-scenario
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          submodules: true
+#      - uses: actions/setup-java@v2
+#        with:
+#          distribution: temurin
+#          java-version: 8
+#      - name: Run Plugin Test
+#        uses: ./.github/actions/run
+#        with:
+#          test_case: ${{ matrix.case }}

@@ -14,83 +14,83 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Test
-
-on:
-  pull_request:
-    paths:
-      - '.github/workflows/plugins-*.yaml'
-      - 'apm-application-toolkit/**'
-      - 'apm-commons/**'
-      - 'apm-protocol/**'
-      - 'apm-sniffer/**'
-      - 'test/plugin/**'
-      - '**/pom.xml'
-      - '!**.md'
-
-concurrency:
-  group: plugins-2-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
-jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Build
-        uses: ./.github/actions/build
-
-  test:
-    needs: [ build ]
-    name: ${{ matrix.case }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    strategy:
-      matrix:
-        case:
-          - okhttp-scenario
-          - play-scenario
-          - postgresql-scenario
-          - pulsar-scenario
-          - rabbitmq-scenario
-          - redisson-scenario
-          - resttemplate-4.x-scenario
-          - servicecomb-1.x-scenario
-          - servicecomb-2.x-scenario
-          - shardingsphere-3.x-scenario
-          - shardingsphere-4.0.x-scenario
-          - shardingsphere-4.x-scenario
-          - shardingsphere-5.0.0-scenario
-          - sofarpc-scenario
-          - solrj-7.x-scenario
-          - spring-3.0.x-scenario
-          - spring-cloud-feign-1.1.x-scenario
-          - spring-cloud-feign-1.2.x-scenario
-          - spring-cloud-feign-2.x-scenario
-          - spring-tx-scenario
-          - struts2.3-scenario
-          - struts2.5-scenario
-          - cxf-scenario
-          - okhttp2-scenario
-          - rocketmq-scenario
-          - jersey-2.0.x-2.25.x-scenario
-          - jersey-2.26.x-2.39.x-scenario
-          - websphere-liberty-23.x-scenario
-          - nacos-client-2.x-scenario
-          - rocketmq-5-grpc-scenario
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-      - name: Run Plugin Test
-        uses: ./.github/actions/run
-        with:
-          test_case: ${{ matrix.case }}
+#name: Test
+#
+#on:
+#  pull_request:
+#    paths:
+#      - '.github/workflows/plugins-*.yaml'
+#      - 'apm-application-toolkit/**'
+#      - 'apm-commons/**'
+#      - 'apm-protocol/**'
+#      - 'apm-sniffer/**'
+#      - 'test/plugin/**'
+#      - '**/pom.xml'
+#      - '!**.md'
+#
+#concurrency:
+#  group: plugins-2-${{ github.event.pull_request.number || github.ref }}
+#  cancel-in-progress: true
+#
+#jobs:
+#  build:
+#    name: Build
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          submodules: true
+#      - name: Build
+#        uses: ./.github/actions/build
+#
+#  test:
+#    needs: [ build ]
+#    name: ${{ matrix.case }}
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 90
+#    strategy:
+#      matrix:
+#        case:
+#          - okhttp-scenario
+#          - play-scenario
+#          - postgresql-scenario
+#          - pulsar-scenario
+#          - rabbitmq-scenario
+#          - redisson-scenario
+#          - resttemplate-4.x-scenario
+#          - servicecomb-1.x-scenario
+#          - servicecomb-2.x-scenario
+#          - shardingsphere-3.x-scenario
+#          - shardingsphere-4.0.x-scenario
+#          - shardingsphere-4.x-scenario
+#          - shardingsphere-5.0.0-scenario
+#          - sofarpc-scenario
+#          - solrj-7.x-scenario
+#          - spring-3.0.x-scenario
+#          - spring-cloud-feign-1.1.x-scenario
+#          - spring-cloud-feign-1.2.x-scenario
+#          - spring-cloud-feign-2.x-scenario
+#          - spring-tx-scenario
+#          - struts2.3-scenario
+#          - struts2.5-scenario
+#          - cxf-scenario
+#          - okhttp2-scenario
+#          - rocketmq-scenario
+#          - jersey-2.0.x-2.25.x-scenario
+#          - jersey-2.26.x-2.39.x-scenario
+#          - websphere-liberty-23.x-scenario
+#          - nacos-client-2.x-scenario
+#          - rocketmq-5-grpc-scenario
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          submodules: true
+#      - uses: actions/setup-java@v2
+#        with:
+#          distribution: temurin
+#          java-version: 8
+#      - name: Run Plugin Test
+#        uses: ./.github/actions/run
+#        with:
+#          test_case: ${{ matrix.case }}

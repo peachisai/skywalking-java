@@ -18,5 +18,5 @@ type: jvm
 entryService: http://localhost:8080/virtual-thread-executor-scenario/case
 healthCheck: http://localhost:8080/virtual-thread-executor-scenario/healthCheck
 runningMode: with_bootstrap
-withPlugins: apm-jdk-virtual-thread-executor-scenario-*.jar
+withPlugins: apm-jdk-virtual-thread-executor-plugin-*.jar
 startScript: ./bin/startup.sh
