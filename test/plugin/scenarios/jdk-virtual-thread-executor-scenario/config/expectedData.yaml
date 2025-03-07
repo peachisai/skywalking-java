@@ -51,6 +51,39 @@ segmentItems:
               - {key: url, value: 'https://github.com/apache/skywalking'}
               - {key: http.method, value: GET}
               - {key: http.status_code, value: '200'}
+          - operationName: java.util.concurrent.ThreadPerTaskExecutor$TaskRunner.run
+            parentSpanId: -1
+            spanId: 0
+            startTime: nq 0
+            endTime: nq 0
+            componentId: not null
+            isError: false
+            spanType: Local
+            skipAnalysis: false
+            tags:
+              - { key: carrier.thread, value: not null }
+            refs:
+              - { parentEndpoint: 'GET:/case', networkAddress: '', refType: CrossThread,
+                parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                    null, parentService: jdk-virtual-thread-executor-scenario, traceId: not null }
+
+      - segmentId: not null
+        spans:
+          - operationName: /apache/skywalking
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 13
+            isError: false
+            spanType: Exit
+            peer: github.com:443
+            skipAnalysis: false
+            tags:
+              - { key: url, value: 'https://github.com/apache/skywalking' }
+              - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
           - operationName: java.util.concurrent.ThreadPerTaskExecutor$ThreadBoundFuture.run
             parentSpanId: -1
             spanId: 0

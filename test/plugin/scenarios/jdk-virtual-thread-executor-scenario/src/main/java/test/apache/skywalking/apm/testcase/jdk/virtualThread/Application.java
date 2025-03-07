@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,15 +58,16 @@ public class Application {
 
         @GetMapping("/case")
         public String testCase() throws ExecutionException, InterruptedException {
-            Runnable runnable = () -> restTemplate.getForEntity("https://github.com/apache/skywalking", String.class);
-            executorService.submit(runnable).get();
+            Runnable runnable = () -> restTemplate.getForEntity("http://www.baidu.com", String.class);
+            executorService.execute(runnable);
+
+            Callable callable = () -> {
+                restTemplate.getForEntity("http://www.baidu.com", String.class);
+                return "success";
+            };
+            executorService.submit(callable).get();
 
             return "success";
-        }
-
-        @GetMapping("/virtualThreadExecutor")
-        public String virtualThreadExecutor() {
-            return "virtualThreadExecutor";
         }
     }
 }
