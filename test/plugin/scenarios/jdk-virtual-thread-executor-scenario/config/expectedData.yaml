@@ -58,7 +58,7 @@ segmentItems:
             endTime: nq 0
             componentId: not null
             isError: false
-            spanType: Unknown
+            spanType: Local
             skipAnalysis: false
             tags:
               - { key: carrier.thread, value: not null }
