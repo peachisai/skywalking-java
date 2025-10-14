@@ -18,38 +18,18 @@
 
 package org.apache.skywalking.apm.plugin;
 
-import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.http.HttpRequest;
 
-public class HttpClientSendInterceptor implements InstanceMethodsAroundInterceptor {
+public class HttpRequestHeadersInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        HttpRequest request = (HttpRequest) allArguments[0];
-        URI uri = request.uri();
 
-        ContextCarrier contextCarrier = new ContextCarrier();
-        AbstractSpan span = ContextManager.createExitSpan(buildOperationName(request.method(), uri), contextCarrier, getPeer(uri));
-
-        if (request instanceof EnhancedInstance) {
-            ((EnhancedInstance) request).setSkyWalkingDynamicField(contextCarrier);
-        }
-
-        span.setComponent(ComponentsDefine.JDK_HTTP);
-        Tags.HTTP.METHOD.set(span, request.method());
-        Tags.URL.set(span, String.valueOf(uri));
-        SpanLayer.asHttp(span);
     }
 
     @Override
@@ -66,24 +46,5 @@ public class HttpClientSendInterceptor implements InstanceMethodsAroundIntercept
         if (ContextManager.isActive()) {
             ContextManager.activeSpan().log(t);
         }
-    }
-
-    private String buildOperationName(String method, URI uri) {
-        String path = uri.getPath();
-        if (path == null || path.isEmpty()) {
-            path = "/";
-        }
-        return method + ":" + path;
-    }
-
-    private String getPeer(URI uri) {
-        String host = uri.getHost();
-        int port = uri.getPort();
-
-        if (port == -1) {
-            port = "https".equalsIgnoreCase(uri.getScheme()) ? 443 : 80;
-        }
-
-        return host + ":" + port;
     }
 }

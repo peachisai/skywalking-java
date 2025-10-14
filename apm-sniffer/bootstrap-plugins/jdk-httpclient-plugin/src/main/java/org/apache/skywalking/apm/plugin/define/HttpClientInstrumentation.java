@@ -32,7 +32,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOpe
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-public class HttpClientSendInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class HttpClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_PARENT_CLASS = "java.net.http.HttpClient";
 
@@ -40,11 +40,7 @@ public class HttpClientSendInstrumentation extends ClassInstanceMethodsEnhancePl
 
     private static final String INTERCEPT_SEND_METHOD = "send";
 
-    private static final String INTERCEPT_HEADERS_METHOD = "headers";
-
     private static final String INTERCEPT_SEND_HANDLE = "org.apache.skywalking.apm.plugin.HttpClientSendInterceptor";
-
-    private static final String INTERCEPT_HEADERS_HANDLE = "org.apache.skywalking.apm.plugin.HttpClientSendInterceptor";
 
     @Override
     public boolean isBootstrapInstrumentation() {
@@ -77,22 +73,6 @@ public class HttpClientSendInstrumentation extends ClassInstanceMethodsEnhancePl
                     @Override
                     public String getMethodsInterceptor() {
                         return INTERCEPT_SEND_HANDLE;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return true;
-                    }
-                },
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return ElementMatchers.named(INTERCEPT_HEADERS_METHOD);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return INTERCEPT_HEADERS_HANDLE;
                     }
 
                     @Override
