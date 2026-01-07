@@ -160,6 +160,10 @@ public final class Tags {
      */
     public static final StringTag THREAD_CARRIER = new StringTag(24, "thread.carrier");
 
+    public static final StringTag MODEL_NAME = new StringTag(25, "model.name");
+
+    public static final StringTag TEMPERATURE = new StringTag(26, "temperature");
+
     /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without
      * creating a new one.
