@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.apache.skywalking.apm.plugin.spring.ai.v1.define;
 
 import net.bytebuddy.description.method.MethodDescription;
@@ -6,26 +24,24 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
+import org.springframework.ai.chat.client.ChatClientRequest;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-/**
- * @description:
- * @author: sym
- * @create: 2026-01-03 09:38
- **/
+public class DefaultChatClientStreamInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-public class DocumentRetrieverInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+    private static final String ENHANCE_CLASS = "org.springframework.ai.chat.client.DefaultChatClient$DefaultStreamResponseSpec";
 
-    private static final String ENHANCE_INTERFACE = "org.springframework.ai.document.DocumentRetriever";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.DocumentRetrieverInterceptor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.DefaultChatClientStreamInterceptor";
+
+    private static final String INTERCEPT_METHOD = "doGetObservableFluxChatResponse";
 
     @Override
     protected ClassMatch enhanceClass() {
-        return HierarchyMatch.byHierarchyMatch(ENHANCE_INTERFACE);
+        return NameMatch.byName(ENHANCE_CLASS);
     }
 
     @Override
@@ -39,9 +55,7 @@ public class DocumentRetrieverInstrumentation extends ClassInstanceMethodsEnhanc
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("retrieve")
-                                .and(takesArguments(1))
-                                .and(takesArgument(0, named("org.springframework.ai.document.Query")));
+                        return named(INTERCEPT_METHOD).and(takesArguments(1)).and(takesArgument(0, ChatClientRequest.class));
                     }
 
                     @Override

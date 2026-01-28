@@ -14,7 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.DefaultChatClientCallInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.DefaultChatClientStreamInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.ToolCallbackInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.VectorStoreRetrieverInstrumentation
+server:
+  port: 8080
+  servlet:
+    context-path: /spring-ai-1.x-scenario
+
+spring:
+  ai:
+    openai:
+      api-key: sk-zuxrezdvwLLU9sGRUEW8mdFKkXuFugK7H9uf2b7iS3qCRU9M
+#      base-url: http://localhost:8080/spring-ai-1.x-scenario/llm
+      base-url: https://globalai.vip
+      embedding:
+        options:
+          model: text-embedding-ada-002
+      chat:
+        options:
+          model: gpt-4.1-2025-04-14
+          temperature: 0.7
+          max-tokens: 1000
+          top-p: 0.9
+
+

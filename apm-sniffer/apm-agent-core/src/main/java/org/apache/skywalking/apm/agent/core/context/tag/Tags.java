@@ -160,9 +160,41 @@ public final class Tags {
      */
     public static final StringTag THREAD_CARRIER = new StringTag(24, "thread.carrier");
 
-    public static final StringTag MODEL_NAME = new StringTag(25, "model.name");
+    public static final StringTag GEN_AI_REQUEST_MODEL = new StringTag(25, "gen_ai.request.model");
 
-    public static final StringTag TEMPERATURE = new StringTag(26, "temperature");
+    public static final StringTag GEN_AI_TOP_K = new StringTag(26, "gen_ai.top.k");
+
+    public static final StringTag GEN_AI_TOP_P = new StringTag(27, "gen_ai.top.p");
+
+    public static final StringTag GEN_AI_TEMPERATURE = new StringTag(28, "gen_ai.temperature");
+
+    public static final StringTag GEN_AI_TOOL_NAME = new StringTag(29, "gen_ai.tool.name");
+
+    public static final StringTag GEN_AI_TOOL_INPUT = new StringTag(30, "gen_ai.tool.input");
+
+    public static final StringTag GEN_AI_RESPONSE_MODEL = new StringTag(31, "gen_ai.response.model");
+
+    public static final StringTag GEN_AI_RESPONSE_ID = new StringTag(32, "gen_ai.response.id");
+
+    public static final StringTag GEN_AI_USAGE_INPUT_TOKENS = new StringTag(33, "gen_ai.usage.input_tokens");
+
+    public static final StringTag GEN_AI_USAGE_OUTPUT_TOKENS = new StringTag(34, "gen_ai.usage.output_tokens");
+
+    public static final StringTag GEN_AI_USAGE_TOTAL_TOKENS = new StringTag(35, "gen_ai.usage.total_tokens");
+
+    public static final StringTag GEN_AI_RESPONSE_FINISH_REASONS = new StringTag(36, "gen_ai.response.finish_reasons");
+
+    public static final StringTag GEN_AI_PROMPT = new StringTag(37, "gen_ai.prompt");
+
+    public static final StringTag GEN_AI_COMPLETION = new StringTag(38, "gen_ai.completion");
+
+    public static final StringTag GEN_AI_STREAM_TTFR = new StringTag(39, "gen_ai.stream.ttfr");
+
+    public static final StringTag GEN_AI_VECTOR_STORE_TOP_K = new StringTag(40, "gen_ai.vector_store.top_k");
+
+    public static final StringTag GEN_AI_VECTOR_STORE_FILTER_EXPRESSION = new StringTag(41, "gen_ai.vector_store.filter_expression");
+
+    public static final StringTag GEN_AI_VECTOR_STORE_RECORD_IDS = new StringTag(42, "gen_ai.vector_store.record_ids");
 
     /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without

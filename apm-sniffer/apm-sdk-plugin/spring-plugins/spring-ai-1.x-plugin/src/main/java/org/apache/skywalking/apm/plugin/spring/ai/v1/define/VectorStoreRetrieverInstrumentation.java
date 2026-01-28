@@ -25,16 +25,18 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
+import org.springframework.ai.vectorstore.SearchRequest;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.returns;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-public class ToolCallbackInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class VectorStoreRetrieverInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_INTERFACE = "org.springframework.ai.tool.ToolCallback";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.ToolCallbackCallInterceptor";
+    private static final String ENHANCE_INTERFACE = "org.springframework.ai.vectorstore.VectorStoreRetriever";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.VectorStoreRetrieverInterceptor";
+
+    private static final String INTERCEPT_METHOD = "doSimilaritySearch";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -52,10 +54,9 @@ public class ToolCallbackInstrumentation extends ClassInstanceMethodsEnhancePlug
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("call")
-                                .and(takesArguments(2))
-                                .and(takesArgument(0, named("java.lang.String")))
-                                .and(returns(named("java.lang.String")));
+                        return named(INTERCEPT_METHOD)
+                                .and(takesArguments(1))
+                                .and(takesArgument(0, SearchRequest.class));
                     }
 
                     @Override

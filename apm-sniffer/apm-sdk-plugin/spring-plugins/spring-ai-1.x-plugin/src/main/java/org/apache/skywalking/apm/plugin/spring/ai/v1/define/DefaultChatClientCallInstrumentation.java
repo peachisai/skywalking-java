@@ -20,25 +20,24 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
+import org.springframework.ai.chat.client.ChatClientRequest;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-public class DefaultChatClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class DefaultChatClientCallInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec";
 
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.DoGetObservableChatClientResponseInterceptor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.DefaultChatClientCallInterceptor";
 
     private static final String INTERCEPT_METHOD = "doGetObservableChatClientResponse";
-
-    private static final String ARGUMENT_TYPE = "org.springframework.ai.chat.client.ChatClientRequest";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -56,9 +55,7 @@ public class DefaultChatClientInstrumentation extends ClassInstanceMethodsEnhanc
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(INTERCEPT_METHOD)
-                                .and(takesArgument(0, named(ARGUMENT_TYPE)))
-                                .and(ElementMatchers.takesArguments(2));
+                        return named(INTERCEPT_METHOD).and(takesArguments(2)).and(takesArgument(0, ChatClientRequest.class));
                     }
 
                     @Override

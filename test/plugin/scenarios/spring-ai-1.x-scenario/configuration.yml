@@ -14,7 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.DefaultChatClientCallInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.DefaultChatClientStreamInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.ToolCallbackInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.VectorStoreRetrieverInstrumentation
+type: jvm
+entryService: http://localhost:8080/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case
+healthCheck: http://localhost:8080/spring-ai-1.x-scenario/case/healthCheck
+runningMode: with_bootstrap
+withPlugins: apm-jdk-httpclient-plugin-*.jar
+startScript: ./bin/startup.sh
+

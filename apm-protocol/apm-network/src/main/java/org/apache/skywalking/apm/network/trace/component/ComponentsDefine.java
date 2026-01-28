@@ -263,8 +263,8 @@ public class ComponentsDefine {
 
     public static final OfficialComponent THREAD_PER_TASK_EXECUTOR = new OfficialComponent(161, "ThreadPerTask-executor");
 
-    public static final OfficialComponent SPRING_AI = new OfficialComponent(162, "Spring-AI");
-
     public static final OfficialComponent DMDB_JDBC_DRIVER = new OfficialComponent(163, "Dmdb-jdbc-driver");
+
+    public static final OfficialComponent SPRING_AI = new OfficialComponent(164, "Spring-ai");
 
 }

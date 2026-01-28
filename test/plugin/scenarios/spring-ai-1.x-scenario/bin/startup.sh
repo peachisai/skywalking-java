@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,7 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.DefaultChatClientCallInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.DefaultChatClientStreamInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.ToolCallbackInstrumentation
-spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.VectorStoreRetrieverInstrumentation
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} ${home}/../libs/jdk-httpclient-scenario.jar &
