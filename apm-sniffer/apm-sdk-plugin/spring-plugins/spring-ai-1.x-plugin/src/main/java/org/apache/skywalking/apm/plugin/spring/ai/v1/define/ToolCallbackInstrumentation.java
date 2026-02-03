@@ -28,8 +28,8 @@ import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.returns;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 
 public class ToolCallbackInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
@@ -54,7 +54,7 @@ public class ToolCallbackInstrumentation extends ClassInstanceMethodsEnhancePlug
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named("call")
                                 .and(takesArguments(2))
-                                .and(takesArgument(0, named("java.lang.String")))
+                                .and(takesArgumentWithType(0, "java.lang.String"))
                                 .and(returns(named("java.lang.String")));
                     }
 

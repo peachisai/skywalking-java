@@ -25,11 +25,10 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
-import org.springframework.ai.vectorstore.SearchRequest;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 
 public class VectorStoreRetrieverInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
@@ -56,7 +55,7 @@ public class VectorStoreRetrieverInstrumentation extends ClassInstanceMethodsEnh
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named(INTERCEPT_METHOD)
                                 .and(takesArguments(1))
-                                .and(takesArgument(0, SearchRequest.class));
+                                .and(takesArgumentWithType(0, "org.springframework.ai.vectorstore.SearchRequest"));
                     }
 
                     @Override
