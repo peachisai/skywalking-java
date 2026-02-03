@@ -19,8 +19,6 @@ package test.apache.skywalking.apm.testcase.jdk.httpclient.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +31,6 @@ public class CaseController {
 
     private final WeatherTool weatherTool;
     private final ChatClient chatClient;
-    private final QuestionAnswerAdvisor questionAnswerAdvisor;
 
     @GetMapping("/healthCheck")
     public String healthCheck() {
@@ -42,37 +39,11 @@ public class CaseController {
 
     @GetMapping("/spring-ai-1.x-scenario-case")
     public String testCase() throws Exception {
-        String content1 = chatClient
+        chatClient
                 .prompt("What's the weather in New York?")
                 .tools(weatherTool)
                 .call()
                 .content();
-
-        System.out.println(content1);
-
-        String systemPrompt = """
-        You are a professional technical assistant.
-        Strictly use the provided context to answer questions.
-        If the information is not in the context, say: "I'm sorry, I don't have that information in my knowledge base."
-        Do not use outside knowledge. Be concise.
-        """;
-
-//        String content = chatClient
-//                .prompt("When is the AI Summit?")
-//                .system(systemPrompt)
-//                .advisors(questionAnswerAdvisor)
-//                .call()
-//                .content();
-//        System.out.println(content);
-
-//        chatClient
-//                .prompt("When is the AI Summit?")
-//                .system(systemPrompt)
-//                .advisors(questionAnswerAdvisor)
-//                .stream()
-//                .content()
-//                .doOnNext(System.out::println)
-//                .blockLast();
 
         return "success";
     }

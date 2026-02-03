@@ -30,7 +30,6 @@ public class LLMMockController {
 
     @RequestMapping("/v1/chat/completions")
     public JSONObject completions(@RequestBody JSONObject request) {
-        System.out.println(request.toString());
 
         JSONArray messages = request.getJSONArray("messages");
 
@@ -181,11 +180,5 @@ public class LLMMockController {
         }
 
         return JSON.parseObject(toolCallResponse);
-    }
-
-    @RequestMapping("/v1/embeddings")
-    public JSONObject embeddings(@RequestBody JSONObject request) {
-        System.out.println(request);
-        return new JSONObject();
     }
 }

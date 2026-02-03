@@ -13,4 +13,64 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+segmentItems:
+  - serviceName: spring-ai-1.x-scenario
+    segmentSize: gt 0
+    segments:
+      - segmentId: not null
+        spans:
+          - operationName: Spring-ai/tool/get_weather
+            parentSpanId: 1
+            spanId: 2
+            spanLayer: Unknown
+            startTime: not null
+            endTime: not null
+            componentId: not null # Spring-ai component
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: 'false'
+            tags:
+              - { key: gen_ai.tool.name, value: get_weather }
+              - { key: gen_ai.tool.input, value: '{"arg0":"New York"}' }
+              - { key: gen_ai.tool.output, value: '"Sunny, 10°C"' }
 
+          - operationName: Spring-ai/chat-client/call
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Unknown
+            startTime: not null
+            endTime: not null
+            componentId: not null # Spring-ai component
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: 'false'
+            tags:
+              - { key: gen_ai.request.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.temperature, value: '0.7' }
+              - { key: gen_ai.top.p, value: '0.9' }
+              - { key: gen_ai.response.id, value: not null }
+              - { key: gen_ai.response.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.usage.input_tokens, value: not null }
+              - { key: gen_ai.usage.output_tokens, value: not null }
+              - { key: gen_ai.usage.total_tokens, value: not null }
+              - { key: gen_ai.response.finish_reasons, value: STOP }
+              - { key: gen_ai.prompt, value: "What's the weather in New York?" }
+              - { key: gen_ai.completion, value: "The weather in New York is currently sunny with a temperature of 10°C." }
+
+          - operationName: GET:/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 14
+            isError: false
+            spanType: Entry
+            peer: ''
+            skipAnalysis: 'false'
+            tags:
+              - { key: url, value: http://localhost:8080/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case }
+              - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
