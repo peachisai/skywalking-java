@@ -17,6 +17,7 @@
 
 package test.apache.skywalking.apm.testcase.jdk.httpclient.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,19 +28,12 @@ import test.apache.skywalking.apm.testcase.jdk.httpclient.tool.WeatherTool;
 
 @RestController
 @RequestMapping("/case")
+@RequiredArgsConstructor
 public class CaseController {
 
     private final WeatherTool weatherTool;
-
     private final ChatClient chatClient;
-
     private final QuestionAnswerAdvisor questionAnswerAdvisor;
-
-    public CaseController(WeatherTool weatherTool, @Qualifier("openAIChatClient") ChatClient chatClient, QuestionAnswerAdvisor questionAnswerAdvisor) {
-        this.weatherTool = weatherTool;
-        this.chatClient = chatClient;
-        this.questionAnswerAdvisor = questionAnswerAdvisor;
-    }
 
     @GetMapping("/healthCheck")
     public String healthCheck() {
@@ -56,14 +50,6 @@ public class CaseController {
 
         System.out.println(content1);
 
-//        chatClient
-//                .prompt("What is Spring AI?")
-//                .system("you are a smart AI")
-//                .stream()
-//                .content()
-//                .doOnNext(System.out::println)
-//                .blockLast();
-
         String systemPrompt = """
         You are a professional technical assistant.
         Strictly use the provided context to answer questions.
@@ -71,15 +57,22 @@ public class CaseController {
         Do not use outside knowledge. Be concise.
         """;
 
-        String content2 = chatClient
-                .prompt("When is the AI Summit?")
-                .advisors(questionAnswerAdvisor)
-                .system(systemPrompt)
-                .stream()
-                .content()
-                .doOnNext(System.out::println)
-                .blockLast();
-        System.out.println(content2);
+//        String content = chatClient
+//                .prompt("When is the AI Summit?")
+//                .system(systemPrompt)
+//                .advisors(questionAnswerAdvisor)
+//                .call()
+//                .content();
+//        System.out.println(content);
+
+//        chatClient
+//                .prompt("When is the AI Summit?")
+//                .system(systemPrompt)
+//                .advisors(questionAnswerAdvisor)
+//                .stream()
+//                .content()
+//                .doOnNext(System.out::println)
+//                .blockLast();
 
         return "success";
     }

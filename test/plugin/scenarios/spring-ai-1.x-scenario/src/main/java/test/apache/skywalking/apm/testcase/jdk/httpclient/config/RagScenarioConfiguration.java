@@ -17,7 +17,6 @@
 
 package test.apache.skywalking.apm.testcase.jdk.httpclient.config;
 
-import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
@@ -40,15 +39,6 @@ public class RagScenarioConfiguration {
 
         documentList.add(new Document("The 2025 AI Summit is scheduled for October 10-12 in San Francisco. " +
                 "The event will focus on Generative AI and Autonomous Agents."));
-
-        documentList.add(new Document("Apache SkyWalking is an open-source Application Performance Management system " +
-                "designed for microservices, cloud native, and container-based architectures."));
-
-        documentList.add(new Document("Spring AI provides a unified interface for interacting with different " +
-                "AI Models, allowing developers to switch between providers with minimal code changes."));
-
-        documentList.add(new Document("A new distributed tracing protocol, TraceContext v2, was proposed " +
-                "on August 25, 2025, to improve cross-cloud observability."));
 
         vectorStore.add(documentList);
 

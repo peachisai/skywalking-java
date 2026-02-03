@@ -22,9 +22,8 @@ server:
 spring:
   ai:
     openai:
-      api-key: sk-zuxrezdvwLLU9sGRUEW8mdFKkXuFugK7H9uf2b7iS3qCRU9M
-#      base-url: http://localhost:8080/spring-ai-1.x-scenario/llm
-      base-url: https://globalai.vip
+      api-key: noaichaPCNAC09DHBWQCOACNacoi
+      base-url: http://localhost:8080/spring-ai-1.x-scenario/llm
       embedding:
         options:
           model: text-embedding-ada-002

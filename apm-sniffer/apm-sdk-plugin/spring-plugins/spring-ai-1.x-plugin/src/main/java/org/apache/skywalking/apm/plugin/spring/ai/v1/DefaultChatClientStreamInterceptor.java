@@ -47,9 +47,9 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/stream");
-
+        span.setComponent(ComponentsDefine.SPRING_AI);
         ChatClientRequest request = (ChatClientRequest) allArguments[0];
-        if (request == null || request.prompt() == null) {
+        if (request == null) {
             return;
         }
 
@@ -59,9 +59,10 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
             return;
         }
 
-        span.setComponent(ComponentsDefine.SPRING_AI);
         Tags.GEN_AI_REQUEST_MODEL.set(span, chatOptions.getModel());
         Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
+        Tags.GEN_AI_TOP_K.set(span, String.valueOf(chatOptions.getTopK()));
+        Tags.GEN_AI_TOP_P.set(span, String.valueOf(chatOptions.getTopP()));
 
         ContextManager.getRuntimeContext().put(Constants.SPRING_AI_STREAM_START_TIME, System.currentTimeMillis());
     }
@@ -80,13 +81,14 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
 
         AtomicReference<ChatResponse> lastResponseRef = new AtomicReference<>();
 
-        StringBuilder completionBuilder = new StringBuilder();
+        final StringBuilder completionBuilder = new StringBuilder();
 
         AtomicReference<String> finishReason = new AtomicReference<>("");
 
         AtomicBoolean firstResponseReceived = new AtomicBoolean(false);
 
-        long startTime = (long) ContextManager.getRuntimeContext().get(Constants.SPRING_AI_STREAM_START_TIME);
+        Long startTime = (Long) ContextManager.getRuntimeContext().get(Constants.SPRING_AI_STREAM_START_TIME);
+        ContextManager.getRuntimeContext().remove(Constants.SPRING_AI_STREAM_START_TIME);
 
         return flux.doOnNext(response -> {
                     if (response.chatResponse() != null) {
@@ -100,7 +102,7 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
                         }
 
                         if (generation.getOutput() != null && StringUtils.hasText(generation.getOutput().getText())) {
-                            if (firstResponseReceived.compareAndSet(false, true)) {
+                            if (firstResponseReceived.compareAndSet(false, true) && startTime != null) {
                                 Tags.GEN_AI_STREAM_TTFR.set(span, String.valueOf(System.currentTimeMillis() - startTime));
                             }
                         }
@@ -158,7 +160,12 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
                                     }
 
                                     if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_COMPLETION) {
-                                        Tags.GEN_AI_COMPLETION.set(span, completionBuilder.toString());
+                                        int limit = SpringAiPluginConfig.Plugin.SpringAi.COMPLETION_LENGTH_LIMIT;
+                                        String output = completionBuilder.toString();
+                                        if (limit > 0 && output.length() > limit) {
+                                            output = output.substring(0, limit);
+                                        }
+                                        Tags.GEN_AI_COMPLETION.set(span, output);
                                     }
                                 }
                             }
@@ -167,7 +174,6 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
                         span.log(t);
                     } finally {
                         span.asyncFinish();
-                        ContextManager.getRuntimeContext().remove(Constants.SPRING_AI_STREAM_START_TIME);
                     }
                 });
     }
@@ -177,52 +183,5 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
         if (ContextManager.isActive()) {
             ContextManager.activeSpan().log(t);
         }
-    }
-
-    private void collectContent(AbstractSpan span, StringBuilder completionBuilder, Object[] allArguments, long totalTokens) {
-        int tokenThreshold = SpringAiPluginConfig.Plugin.SpringAi.CONTENT_COLLECT_THRESHOLD_TOKENS;
-
-        if (tokenThreshold >= 0 && totalTokens < tokenThreshold) {
-            return;
-        }
-
-        if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_PROMPT) {
-            collectPrompt(span, allArguments);
-        }
-
-        if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_COMPLETION) {
-            collectCompletion(span, completionBuilder);
-        }
-    }
-
-    private void collectPrompt(AbstractSpan span, Object[] allArguments) {
-        ChatClientRequest request = (ChatClientRequest) allArguments[0];
-        if (request == null || request.prompt() == null) {
-            return;
-        }
-
-        String promptText = request.prompt().getContents();
-        if (promptText == null) {
-            return;
-        }
-
-        int limit = SpringAiPluginConfig.Plugin.SpringAi.PROMPT_LENGTH_LIMIT;
-        if (limit > 0 && promptText.length() > limit) {
-            promptText = promptText.substring(0, limit);
-        }
-        Tags.GEN_AI_PROMPT.set(span, promptText);
-    }
-
-    private void collectCompletion(AbstractSpan span, StringBuilder completionBuilder) {
-        String completionText = completionBuilder.toString();
-        if (completionText.isEmpty()) {
-            return;
-        }
-
-        int limit = SpringAiPluginConfig.Plugin.SpringAi.COMPLETION_LENGTH_LIMIT;
-        if (limit > 0 && completionText.length() > limit) {
-            completionText = completionText.substring(0, limit);
-        }
-        Tags.GEN_AI_COMPLETION.set(span, completionText);
     }
 }

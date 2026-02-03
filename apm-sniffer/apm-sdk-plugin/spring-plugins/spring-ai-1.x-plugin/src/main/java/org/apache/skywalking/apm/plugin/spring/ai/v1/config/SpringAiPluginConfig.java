@@ -30,12 +30,12 @@ public class SpringAiPluginConfig {
             /**
              * Whether to collect the prompt content (input text) of the GenAI request.
              */
-            public static boolean COLLECT_PROMPT = true;
+            public static boolean COLLECT_PROMPT = false;
 
             /**
              * Whether to collect the completion content (output text) of the GenAI response.
              */
-            public static boolean COLLECT_COMPLETION = true;
+            public static boolean COLLECT_COMPLETION = false;
 
             /**
              * The maximum characters of the collected prompt content.
@@ -59,6 +59,16 @@ public class SpringAiPluginConfig {
              * Use a negative value to disable this threshold-based filtering (collect all).
              */
             public static int CONTENT_COLLECT_THRESHOLD_TOKENS = -1;
+
+            /**
+             * Whether to collect the arguments (input parameters) of the tool/function call.
+             */
+            public static boolean COLLECT_TOOL_INPUT = false;
+
+            /**
+             * Whether to collect the execution result (output) of the tool/function call.
+             */
+            public static boolean COLLECT_TOOL_OUTPUT = false;
         }
     }
 }

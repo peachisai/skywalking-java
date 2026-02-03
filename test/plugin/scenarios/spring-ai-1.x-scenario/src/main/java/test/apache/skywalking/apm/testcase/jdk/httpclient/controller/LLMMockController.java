@@ -53,7 +53,7 @@ public class LLMMockController {
                                 "tool_calls": [
                                     {
                                         "function": {
-                                            "arguments": "{\\"arg0\\":\\"beijing\\"}",
+                                            "arguments": "{\\"arg0\\":\\"new york\\"}",
                                             "name": "get_weather"
                                         },
                                         "id": "call_iV4bvFIZujbbVZwWbvsUKiiK",
@@ -124,7 +124,7 @@ public class LLMMockController {
                                    "logprobs": null,
                                    "message": {
                                        "annotations": [],
-                                       "content": "The weather in Beijing is currently sunny with a temperature of 10°C.",
+                                       "content": "The weather in New York is currently sunny with a temperature of 10°C.",
                                        "refusal": null,
                                        "role": "assistant"
                                    }
@@ -181,5 +181,11 @@ public class LLMMockController {
         }
 
         return JSON.parseObject(toolCallResponse);
+    }
+
+    @RequestMapping("/v1/embeddings")
+    public JSONObject embeddings(@RequestBody JSONObject request) {
+        System.out.println(request);
+        return new JSONObject();
     }
 }

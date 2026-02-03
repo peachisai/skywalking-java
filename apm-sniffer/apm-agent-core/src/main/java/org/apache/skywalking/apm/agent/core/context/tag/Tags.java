@@ -172,6 +172,8 @@ public final class Tags {
 
     public static final StringTag GEN_AI_TOOL_INPUT = new StringTag(30, "gen_ai.tool.input");
 
+    public static final StringTag GEN_AI_TOOL_OUTPUT = new StringTag(43, "gen_ai.tool.output");
+
     public static final StringTag GEN_AI_RESPONSE_MODEL = new StringTag(31, "gen_ai.response.model");
 
     public static final StringTag GEN_AI_RESPONSE_ID = new StringTag(32, "gen_ai.response.id");
