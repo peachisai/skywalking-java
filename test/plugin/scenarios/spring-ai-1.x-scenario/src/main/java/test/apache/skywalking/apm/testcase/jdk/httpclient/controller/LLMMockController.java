@@ -55,7 +55,7 @@ public class LLMMockController {
                                             "arguments": "{\\"arg0\\":\\"new york\\"}",
                                             "name": "get_weather"
                                         },
-                                        "id": "call_iV4bvFIZujbbVZwWbvsUKiiK",
+                                        "id": "call_iV4bvFIZujbb",
                                         "type": "function"
                                     }
                                 ]
@@ -63,7 +63,7 @@ public class LLMMockController {
                         }
                     ],
                     "created": 1768490813,
-                    "id": "chatcmpl-CyJXJt7gxwDgz7UjYml95gc54784J",
+                    "id": "chatcmpl-CyJXJt7gxwDgz7Uj",
                     "model": "gpt-4.1-2025-04-14",
                     "object": "chat.completion",
                     "prompt_filter_results": [
@@ -77,7 +77,7 @@ public class LLMMockController {
                             }
                         }
                     ],
-                    "system_fingerprint": "fp_b9041e10b4",
+                    "system_fingerprint": "fp_b9041e1",
                     "usage": {
                         "completion_tokens": 17,
                         "completion_tokens_details": {
@@ -130,7 +130,7 @@ public class LLMMockController {
                                }
                            ],
                            "created": 1768491057,
-                           "id": "chatcmpl-CyJbFkZsyhOyHW2Otycoh2s4vrAZE",
+                           "id": "chatcmpl-CyJbFkZsyhOyHW2Otyc",
                            "model": "gpt-4.1-2025-04-14",
                            "object": "chat.completion",
                            "prompt_filter_results": [
@@ -156,7 +156,7 @@ public class LLMMockController {
                                    }
                                }
                            ],
-                           "system_fingerprint": "fp_b9041e10b4",
+                           "system_fingerprint": "fp_b9041e1",
                            "usage": {
                                "completion_tokens": 17,
                                "completion_tokens_details": {
