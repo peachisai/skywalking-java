@@ -80,7 +80,7 @@
     </dependencyManagement>
 
     <build>
-        <finalName>jdk-httpclient-scenario</finalName>
+        <finalName>spring-ai-1.x-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
