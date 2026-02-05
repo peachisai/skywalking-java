@@ -49,6 +49,7 @@ segmentItems:
             tags:
               - { key: gen_ai.request.model, value: gpt-4.1-2025-04-14 }
               - { key: gen_ai.temperature, value: '0.7' }
+              - { key: gen_ai.top.k, value: null }
               - { key: gen_ai.top.p, value: '0.9' }
               - { key: gen_ai.response.id, value: not null }
               - { key: gen_ai.response.model, value: gpt-4.1-2025-04-14 }
