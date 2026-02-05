@@ -25,14 +25,14 @@ segmentItems:
             spanLayer: Unknown
             startTime: not null
             endTime: not null
-            componentId: not null # Spring-ai component
+            componentId: 164
             isError: false
             spanType: Local
             peer: ''
             skipAnalysis: 'false'
             tags:
               - { key: gen_ai.tool.name, value: get_weather }
-              - { key: gen_ai.tool.input, value: '{"arg0":"New York"}' }
+              - { key: gen_ai.tool.input, value: '{"arg0":"new york"}' }
               - { key: gen_ai.tool.output, value: '"Sunny, 10°C"' }
 
           - operationName: Spring-ai/chat-client/call
@@ -41,7 +41,7 @@ segmentItems:
             spanLayer: Unknown
             startTime: not null
             endTime: not null
-            componentId: not null # Spring-ai component
+            componentId: 164
             isError: false
             spanType: Local
             peer: ''
