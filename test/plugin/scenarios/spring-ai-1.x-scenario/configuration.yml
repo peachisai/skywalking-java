@@ -17,7 +17,5 @@
 type: jvm
 entryService: http://localhost:8080/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case
 healthCheck: http://localhost:8080/spring-ai-1.x-scenario/case/healthCheck
-runningMode: with_bootstrap
-withPlugins: apm-jdk-httpclient-plugin-*.jar
 startScript: ./bin/startup.sh
 
