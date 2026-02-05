@@ -33,7 +33,7 @@
 
     <files>
         <file>
-            <source>./target/jdk-httpclient-scenario.jar</source>
+            <source>./target/spring-ai-1.x-scenario.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>
         </file>
