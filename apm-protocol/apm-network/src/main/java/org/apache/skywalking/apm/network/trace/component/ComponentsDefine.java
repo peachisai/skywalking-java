@@ -265,4 +265,6 @@ public class ComponentsDefine {
 
     public static final OfficialComponent DMDB_JDBC_DRIVER = new OfficialComponent(163, "Dmdb-jdbc-driver");
 
+    public static final OfficialComponent SPRING_AI = new OfficialComponent(164, "Spring-ai");
+
 }
