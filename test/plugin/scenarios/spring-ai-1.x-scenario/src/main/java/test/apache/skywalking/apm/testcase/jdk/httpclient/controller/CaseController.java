@@ -39,11 +39,37 @@ public class CaseController {
 
     @GetMapping("/spring-ai-1.x-scenario-case")
     public String testCase() throws Exception {
+
+        String systemPrompt = """
+                You are a professional technical assistant.
+                Strictly use the provided context to answer questions.
+                If the information is not in the context, say: "I'm sorry, I don't have that information in my knowledge base."
+                Do not use outside knowledge. Be concise.
+                """;
+
         chatClient
                 .prompt("What's the weather in New York?")
+                .system(systemPrompt)
                 .tools(weatherTool)
                 .call()
                 .content();
+
+        chatClient
+                .prompt("What's the weather in New York?")
+                .system(systemPrompt)
+                .tools(weatherTool)
+                .stream()
+                .content()
+                .doOnNext(System.out::println)
+                .blockLast();
+
+//        chatClient
+//                .prompt("What is Spring AI?")
+//                .system(systemPrompt)
+//                .stream()
+//                .content()
+//                .doOnNext(System.out::println)
+//                .blockLast();
 
         return "success";
     }

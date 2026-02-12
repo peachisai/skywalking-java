@@ -21,11 +21,15 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
@@ -37,20 +41,28 @@ import org.springframework.ai.chat.prompt.Prompt;
 
 import java.lang.reflect.Method;
 
-public class DefaultChatClientCallInterceptor implements InstanceMethodsAroundInterceptor {
+public class ChatModelCallInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/chat-client/call");
+        AbstractSpan span = ContextManager.createExitSpan("Spring-ai/client/call", null);
+        ChatModelMetadataResolver.ApiMetadata apiMetadata = ChatModelMetadataResolver.getMetadata(objInst);
+        if (apiMetadata != null) {
+            span.setPeer(apiMetadata.getPeer());
+            Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
+        } else {
+            Tags.GEN_AI_PROVIDER_NAME.set(span, AiProviderEnum.UNKNOW.getValue());
+        }
 
-        ChatClientRequest request = (ChatClientRequest) allArguments[0];
-        Prompt prompt = request.prompt();
+        Prompt prompt = (Prompt) allArguments[0];
         ChatOptions chatOptions = prompt.getOptions();
         if (chatOptions == null) {
             return;
         }
 
         span.setComponent(ComponentsDefine.SPRING_AI);
+        SpanLayer.asGenAI(span);
+        Tags.GEN_AI_OPERATION_NAME.set(span, Constants.CHAT);
         Tags.GEN_AI_REQUEST_MODEL.set(span, chatOptions.getModel());
         Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
         Tags.GEN_AI_TOP_K.set(span, String.valueOf(chatOptions.getTopK()));
@@ -93,7 +105,7 @@ public class DefaultChatClientCallInterceptor implements InstanceMethodsAroundIn
                     }
                     if (usage.getTotalTokens() != null) {
                         totalTokens = usage.getTotalTokens();
-                        Tags.GEN_AI_USAGE_TOTAL_TOKENS.set(span, String.valueOf(totalTokens));
+                        Tags.GEN_AI_CLIENT_TOKEN_USAGE.set(span, String.valueOf(totalTokens));
                     }
                 }
             }
@@ -138,7 +150,7 @@ public class DefaultChatClientCallInterceptor implements InstanceMethodsAroundIn
 
     private void collectPrompt(AbstractSpan span, Object[] allArguments) {
         ChatClientRequest request = (ChatClientRequest) allArguments[0];
-        if (request == null || request.prompt() == null) {
+        if (request == null) {
             return;
         }
 

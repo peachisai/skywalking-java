@@ -20,4 +20,10 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1.contant;
 
 public class Constants {
     public static final String SPRING_AI_STREAM_START_TIME = "Spring-ai.stream.startTime";
+
+    public static final String SKYWALKING_CONTEXT_SNAPSHOT = "SKYWALKING_CONTEXT_SNAPSHOT";
+
+    public static final String CHAT = "chat";
+
+    public static final String EXECUTE_TOOL = "execute_tool";
 }

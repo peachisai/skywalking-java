@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.spring.ai.v1.define;
+package org.apache.skywalking.apm.plugin.spring.ai.v1.define.provider;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -27,16 +27,13 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
-import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 
-public class DefaultChatClientCallInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class AnthropicApiInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec";
-
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.DefaultChatClientCallInterceptor";
-
-    private static final String INTERCEPT_METHOD = "doGetObservableChatClientResponse";
+    private static final String ENHANCE_CLASS = "org.springframework.ai.anthropic.api.AnthropicApi";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.AnthropicApiConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -45,28 +42,23 @@ public class DefaultChatClientCallInstrumentation extends ClassInstanceMethodsEn
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
+        return new ConstructorInterceptPoint[]{
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return takesArguments(8).and(takesArgument(0, named("java.lang.String"))).and(takesArgument(1, named("java.lang.String")));
+                    }
+
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return INTERCEPTOR_CLASS;
+                    }
+                }
+        };
     }
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[]{
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(INTERCEPT_METHOD).and(takesArguments(2)).and(takesArgumentWithType(0, "org.springframework.ai.chat.client.ChatClientRequest"));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return INTERCEPTOR_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                }
-        };
+        return new InstanceMethodsInterceptPoint[0];
     }
 }

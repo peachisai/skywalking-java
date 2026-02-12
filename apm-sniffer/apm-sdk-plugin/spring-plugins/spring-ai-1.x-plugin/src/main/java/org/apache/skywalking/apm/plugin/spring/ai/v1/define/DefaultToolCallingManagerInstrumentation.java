@@ -30,13 +30,13 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 
-public class DefaultChatClientStreamInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class DefaultToolCallingManagerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.springframework.ai.chat.client.DefaultChatClient$DefaultStreamResponseSpec";
+    private static final String ENHANCE_CLASS = "org.springframework.ai.model.tool.DefaultToolCallingManager";
 
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.DefaultChatClientStreamInterceptor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.DefaultToolCallingManagerInterceptor";
 
-    private static final String INTERCEPT_METHOD = "doGetObservableFluxChatResponse";
+    private static final String INTERCEPT_METHOD = "executeToolCall";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -54,7 +54,7 @@ public class DefaultChatClientStreamInstrumentation extends ClassInstanceMethods
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(INTERCEPT_METHOD).and(takesArguments(1)).and(takesArgumentWithType(0, "org.springframework.ai.chat.client.ChatClientRequest"));
+                        return named(INTERCEPT_METHOD).and(takesArguments(3)).and(takesArgumentWithType(0, "org.springframework.ai.chat.prompt.Prompt"));
                     }
 
                     @Override

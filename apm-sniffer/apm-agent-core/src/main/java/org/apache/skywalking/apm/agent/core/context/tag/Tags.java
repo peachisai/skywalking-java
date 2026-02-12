@@ -160,43 +160,125 @@ public final class Tags {
      */
     public static final StringTag THREAD_CARRIER = new StringTag(24, "thread.carrier");
 
+    /**
+     * GEN_AI_OPERATION_NAME represents the name of the operation being performed
+     */
+    public static final StringTag GEN_AI_OPERATION_NAME = new StringTag(44, "gen_ai.operation.name");
+
+    /**
+     * GEN_AI_PROVIDER_NAME represents the Generative AI provider as identified by the client or server instrumentation.
+     */
+    public static final StringTag GEN_AI_PROVIDER_NAME = new StringTag(46, "gen_ai.provider.name");
+
+    /**
+     * GEN_AI_REQUEST_MODEL represents the name of the GenAI model a request is being made to.
+     */
     public static final StringTag GEN_AI_REQUEST_MODEL = new StringTag(25, "gen_ai.request.model");
 
-    public static final StringTag GEN_AI_TOP_K = new StringTag(26, "gen_ai.top.k");
+    /**
+     * GEN_AI_TOP_K represents the top_k sampling setting for the GenAI request.
+     */
+    public static final StringTag GEN_AI_TOP_K = new StringTag(26, "gen_ai.request.top_k");
 
-    public static final StringTag GEN_AI_TOP_P = new StringTag(27, "gen_ai.top.p");
+    /**
+     * GEN_AI_TOP_P represents the top_p sampling setting for the GenAI request.
+     */
+    public static final StringTag GEN_AI_TOP_P = new StringTag(27, "gen_ai.request.top_p");
 
-    public static final StringTag GEN_AI_TEMPERATURE = new StringTag(28, "gen_ai.temperature");
+    /**
+     * GEN_AI_TEMPERATURE represents the temperature setting for the GenAI request.
+     */
+    public static final StringTag GEN_AI_TEMPERATURE = new StringTag(28, "gen_ai.request.temperature");
 
+    /**
+     * GEN_AI_TOOL_NAME represents the name of the tool utilized by the agent.
+     */
     public static final StringTag GEN_AI_TOOL_NAME = new StringTag(29, "gen_ai.tool.name");
 
-    public static final StringTag GEN_AI_TOOL_INPUT = new StringTag(30, "gen_ai.tool.input");
+    /**
+     * GEN_AI_TOOL_CALL_ARGUMENTS represents the parameters passed to the tool call.
+     */
+    public static final StringTag GEN_AI_TOOL_CALL_ARGUMENTS = new StringTag(30, "gen_ai.tool.call.arguments");
 
-    public static final StringTag GEN_AI_TOOL_OUTPUT = new StringTag(43, "gen_ai.tool.output");
+    /**
+     * GEN_AI_TOOL_CALL_RESULT represents the result returned by the tool call (if any and if execution was successful).
+     */
+    public static final StringTag GEN_AI_TOOL_CALL_RESULT = new StringTag(43, "gen_ai.tool.call.result");
 
+    /**
+     * GEN_AI_RESPONSE_MODEL represents the name of the model that generated the response.
+     */
     public static final StringTag GEN_AI_RESPONSE_MODEL = new StringTag(31, "gen_ai.response.model");
 
+    /**
+     * GEN_AI_RESPONSE_ID represents the unique identifier for the completion.
+     */
     public static final StringTag GEN_AI_RESPONSE_ID = new StringTag(32, "gen_ai.response.id");
 
+    /**
+     * GEN_AI_USAGE_INPUT_TOKENS represents the number of tokens used in the GenAI input (prompt).
+     */
     public static final StringTag GEN_AI_USAGE_INPUT_TOKENS = new StringTag(33, "gen_ai.usage.input_tokens");
 
+    /**
+     * GEN_AI_USAGE_OUTPUT_TOKENS represents the number of tokens used in the GenAI response (completion).
+     */
     public static final StringTag GEN_AI_USAGE_OUTPUT_TOKENS = new StringTag(34, "gen_ai.usage.output_tokens");
 
-    public static final StringTag GEN_AI_USAGE_TOTAL_TOKENS = new StringTag(35, "gen_ai.usage.total_tokens");
+    /**
+     * GEN_AI_USAGE_TOTAL_TOKENS represents the total number of tokens used in the GenAI exchange.
+     */
+    public static final StringTag GEN_AI_CLIENT_TOKEN_USAGE = new StringTag(35, "gen_ai.client.token.usage");
 
+    /**
+     * GEN_AI_RESPONSE_FINISH_REASONS represents the array of reasons the model stopped generating tokens.
+     */
     public static final StringTag GEN_AI_RESPONSE_FINISH_REASONS = new StringTag(36, "gen_ai.response.finish_reasons");
 
+    /**
+     * GEN_AI_PROMPT represents the full prompt text or messages provided to the model.
+     */
     public static final StringTag GEN_AI_PROMPT = new StringTag(37, "gen_ai.prompt");
 
+    /**
+     * GEN_AI_COMPLETION represents the full completion text or messages returned by the model.
+     */
     public static final StringTag GEN_AI_COMPLETION = new StringTag(38, "gen_ai.completion");
 
+    /**
+     * GEN_AI_STREAM_TTFR represents the time to first response (TTFR) for streaming operations.
+     */
     public static final StringTag GEN_AI_STREAM_TTFR = new StringTag(39, "gen_ai.stream.ttfr");
 
+    /**
+     * GEN_AI_VECTOR_STORE_TOP_K represents the target number of top results to return from the vector store.
+     */
     public static final StringTag GEN_AI_VECTOR_STORE_TOP_K = new StringTag(40, "gen_ai.vector_store.top_k");
 
+    /**
+     * GEN_AI_VECTOR_STORE_FILTER_EXPRESSION represents the filter expression used in the vector store search.
+     */
     public static final StringTag GEN_AI_VECTOR_STORE_FILTER_EXPRESSION = new StringTag(41, "gen_ai.vector_store.filter_expression");
 
+    /**
+     * GEN_AI_VECTOR_STORE_RECORD_IDS represents the unique identifiers of the records retrieved from the vector store.
+     */
     public static final StringTag GEN_AI_VECTOR_STORE_RECORD_IDS = new StringTag(42, "gen_ai.vector_store.record_ids");
+
+    /**
+     * GEN_AI_SYSTEM_INSTRUCTIONS represents the system message or instructions provided to the GenAI model separately from the chat history.
+     */
+    public static final StringTag GEN_AI_SYSTEM_INSTRUCTIONS = new StringTag(43, "gen_ai.system_instructions");
+
+    /**
+     * GEN_AI_INPUT_MESSAGES represents the chat history provided to the model as an input.
+     */
+    public static final StringTag GEN_AI_INPUT_MESSAGES = new StringTag(44, "gen_ai.input.messages");
+
+    /**
+     * GEN_AI_OUTPUT_MESSAGES represents the messages returned by the model where each message represents a specific model response (choice, candidate).
+     */
+    public static final StringTag GEN_AI_OUTPUT_MESSAGES = new StringTag(45, "gen_ai.output.messages");
 
     /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without

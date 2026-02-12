@@ -19,16 +19,17 @@
 package org.apache.skywalking.apm.plugin.spring.ai.v1;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
-import org.springframework.ai.chat.client.ChatClientRequest;
-import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -42,23 +43,31 @@ import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class DefaultChatClientStreamInterceptor implements InstanceMethodsAroundInterceptor {
+public class ChatModelStreamInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/stream");
+        AbstractSpan span = ContextManager.createExitSpan("Spring-ai/client/stream", null);
+        ChatModelMetadataResolver.ApiMetadata apiMetadata = ChatModelMetadataResolver.getMetadata(objInst);
+        if (apiMetadata != null) {
+            span.setPeer(apiMetadata.getPeer());
+            Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
+        }
+
         span.setComponent(ComponentsDefine.SPRING_AI);
-        ChatClientRequest request = (ChatClientRequest) allArguments[0];
-        if (request == null) {
+        SpanLayer.asGenAI(span);
+
+        Prompt prompt = (Prompt) allArguments[0];
+        if (prompt == null) {
             return;
         }
 
-        Prompt prompt = request.prompt();
         ChatOptions chatOptions = prompt.getOptions();
         if (chatOptions == null) {
             return;
         }
 
+        Tags.GEN_AI_OPERATION_NAME.set(span, Constants.CHAT);
         Tags.GEN_AI_REQUEST_MODEL.set(span, chatOptions.getModel());
         Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
         Tags.GEN_AI_TOP_K.set(span, String.valueOf(chatOptions.getTopK()));
@@ -73,11 +82,12 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
             return ret;
         }
         AbstractSpan span = ContextManager.activeSpan();
-        span.prepareForAsync();
+        ContextSnapshot contextSnapshot = ContextManager.capture();
 
+        span.prepareForAsync();
         ContextManager.stopSpan();
 
-        Flux<ChatClientResponse> flux = (Flux<ChatClientResponse>) ret;
+        Flux<ChatResponse> flux = (Flux<ChatResponse>) ret;
 
         AtomicReference<ChatResponse> lastResponseRef = new AtomicReference<>();
 
@@ -91,12 +101,11 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
         ContextManager.getRuntimeContext().remove(Constants.SPRING_AI_STREAM_START_TIME);
 
         return flux.doOnNext(response -> {
-                    if (response.chatResponse() != null) {
+                    if (response != null) {
 
-                        ChatResponse chatResponse = response.chatResponse();
-                        lastResponseRef.set(chatResponse);
+                        lastResponseRef.set(response);
 
-                        Generation generation = chatResponse.getResult();
+                        Generation generation = response.getResult();
                         if (generation == null) {
                             return;
                         }
@@ -138,7 +147,7 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
                                     Tags.GEN_AI_USAGE_INPUT_TOKENS.set(span, String.valueOf(usage.getPromptTokens()));
                                     Tags.GEN_AI_USAGE_OUTPUT_TOKENS.set(span, String.valueOf(usage.getCompletionTokens()));
                                     totalTokens = usage.getTotalTokens() != null ? usage.getTotalTokens() : 0;
-                                    Tags.GEN_AI_USAGE_TOTAL_TOKENS.set(span, String.valueOf(usage.getTotalTokens().longValue()));
+                                    Tags.GEN_AI_CLIENT_TOKEN_USAGE.set(span, String.valueOf(usage.getTotalTokens().longValue()));
                                 }
 
                                 Tags.GEN_AI_RESPONSE_FINISH_REASONS.set(span, finishReason.get());
@@ -147,8 +156,7 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
                                 if (tokenThreshold < 0 || totalTokens >= tokenThreshold) {
 
                                     if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_PROMPT) {
-                                        ChatClientRequest request = (ChatClientRequest) allArguments[0];
-                                        Prompt prompt = request.prompt();
+                                        Prompt prompt = (Prompt) allArguments[0];
                                         String promptText = prompt.getContents();
                                         if (promptText != null) {
                                             int limit = SpringAiPluginConfig.Plugin.SpringAi.PROMPT_LENGTH_LIMIT;
@@ -175,7 +183,7 @@ public class DefaultChatClientStreamInterceptor implements InstanceMethodsAround
                     } finally {
                         span.asyncFinish();
                     }
-                });
+                }).contextWrite(c -> c.put(Constants.SKYWALKING_CONTEXT_SNAPSHOT, contextSnapshot));
     }
 
     @Override

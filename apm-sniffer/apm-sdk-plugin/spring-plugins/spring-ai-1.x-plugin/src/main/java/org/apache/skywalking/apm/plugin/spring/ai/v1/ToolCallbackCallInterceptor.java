@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -43,12 +44,13 @@ public class ToolCallbackCallInterceptor implements InstanceMethodsAroundInterce
 
         AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/tool/" + toolName);
         span.setComponent(ComponentsDefine.SPRING_AI);
+        SpanLayer.asGenAI(span);
 
         Tags.GEN_AI_TOOL_NAME.set(span, toolName);
 
         if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_TOOL_INPUT) {
             String toolInput = (String) allArguments[0];
-            Tags.GEN_AI_TOOL_INPUT.set(span, toolInput);
+            Tags.GEN_AI_TOOL_CALL_ARGUMENTS.set(span, toolInput);
         }
     }
 
@@ -58,7 +60,7 @@ public class ToolCallbackCallInterceptor implements InstanceMethodsAroundInterce
         if (ContextManager.isActive()) {
             AbstractSpan span = ContextManager.activeSpan();
             if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_TOOL_OUTPUT && ret != null) {
-                Tags.GEN_AI_TOOL_OUTPUT.set(span, (String) ret);
+                Tags.GEN_AI_TOOL_CALL_RESULT.set(span, (String) ret);
             }
 
             ContextManager.stopSpan();
