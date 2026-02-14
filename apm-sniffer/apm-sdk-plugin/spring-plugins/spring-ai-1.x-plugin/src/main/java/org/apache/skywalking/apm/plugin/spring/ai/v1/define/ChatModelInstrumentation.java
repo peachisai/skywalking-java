@@ -58,7 +58,7 @@ public class ChatModelInstrumentation extends ClassInstanceMethodsEnhancePluginD
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(INTERCEPT_CALL_METHOD).and(takesArguments(1)).and(takesArgumentWithType(0, "org.springframework.ai.chat.prompt.Prompt"));
+                        return named(INTERCEPT_CALL_METHOD);
                     }
 
                     @Override

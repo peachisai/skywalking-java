@@ -23,16 +23,16 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 
-public class AnthropicApiInterceptor implements InstanceConstructorInterceptor {
+public class DeepSeekApiInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
-        ChatModelMetadataResolver.ApiMetadata metadata = ChatModelMetadataResolver.getMetadata(AiProviderEnum.ANTHROPIC_CLAUDE.getModelClassName());
+        ChatModelMetadataResolver.ApiMetadata metadata = ChatModelMetadataResolver.getMetadata(AiProviderEnum.DEEPSEEK.getModelClassName());
         if (metadata == null) {
             return;
         }
 
         metadata.setBaseUrl((String) allArguments[0]);
-        metadata.setCompletionsPath((String) allArguments[1]);
+        metadata.setCompletionsPath((String) allArguments[3]);
     }
 }

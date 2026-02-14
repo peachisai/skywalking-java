@@ -32,10 +32,7 @@ public class OpenAiApiInterceptor implements InstanceConstructorInterceptor {
             return;
         }
 
-        String baseUrl = (String) allArguments[0];
-        String completionsPath = (String) allArguments[3];
-
-        metadata.setBaseUrl(baseUrl);
-        metadata.setCompletionsPath(completionsPath);
+        metadata.setBaseUrl((String) allArguments[0]);
+        metadata.setCompletionsPath((String) allArguments[3]);
     }
 }

@@ -46,6 +46,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         AbstractSpan span = ContextManager.createExitSpan("Spring-ai/client/call", null);
+        SpanLayer.asGenAI(span);
         ChatModelMetadataResolver.ApiMetadata apiMetadata = ChatModelMetadataResolver.getMetadata(objInst);
         if (apiMetadata != null) {
             span.setPeer(apiMetadata.getPeer());
@@ -61,7 +62,6 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
         }
 
         span.setComponent(ComponentsDefine.SPRING_AI);
-        SpanLayer.asGenAI(span);
         Tags.GEN_AI_OPERATION_NAME.set(span, Constants.CHAT);
         Tags.GEN_AI_REQUEST_MODEL.set(span, chatOptions.getModel());
         Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
@@ -163,6 +163,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
         if (limit > 0 && promptText.length() > limit) {
             promptText = promptText.substring(0, limit);
         }
+
         Tags.GEN_AI_PROMPT.set(span, promptText);
     }
 

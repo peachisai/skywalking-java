@@ -30,7 +30,7 @@ public enum AiProviderEnum {
 
     OCI_GENAI_COHERE("cohere", "org.springframework.ai.oci.cohere.OCICohereChatModel"),
 
-    DEEPSEEK_OPENAI_PROXY("deepseek", "org.springframework.ai.deepseek.DeepSeekChatModel"),
+    DEEPSEEK("deepseek", "org.springframework.ai.deepseek.DeepSeekChatModel"),
 
     GOOGLE_GENAI("gcp.gen_ai", "org.springframework.ai.google.genai.GoogleGenAiChatModel"),
 

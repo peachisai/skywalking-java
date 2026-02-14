@@ -26,4 +26,6 @@ public class Constants {
     public static final String CHAT = "chat";
 
     public static final String EXECUTE_TOOL = "execute_tool";
+
+    public static final String DEFAULT_COMPLETIONS_PATH = "/v1/chat/completions";
 }

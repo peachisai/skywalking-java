@@ -28,11 +28,12 @@ import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-public class OpenAIApiInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class DeepSeekApiInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.springframework.ai.openai.api.OpenAiApi";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.OpenAIApiConstructorInterceptor";
+    private static final String ENHANCE_CLASS = "org.springframework.ai.deepseek.api.DeepSeekApi";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.DeepSeekApiInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -45,7 +46,7 @@ public class OpenAIApiInstrumentation extends ClassInstanceMethodsEnhancePluginD
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgument(0, named("java.lang.String")).and(takesArgument(3, named("java.lang.String")));
+                        return takesArguments(8).and(takesArgument(0, named("java.lang.String"))).and(takesArgument(3, named("java.lang.String")));
                     }
 
                     @Override

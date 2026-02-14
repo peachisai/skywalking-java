@@ -32,67 +32,28 @@ public class ChatModelMetadataResolver {
     private static final Map<String, ApiMetadata> MODEL_METADATA_MAP = new HashMap<>();
 
     static {
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.ANTHROPIC_CLAUDE.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.ANTHROPIC_CLAUDE.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.OPENAI.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.OPENAI.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.AZURE_OPENAI.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.AZURE_OPENAI.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.OPENAI_SDK_OFFICIAL.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.OPENAI_SDK_OFFICIAL.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.AMAZON_BEDROCK_CONVERSE.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.AMAZON_BEDROCK_CONVERSE.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.GOOGLE_VERTEXAI_GEMINI.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.GOOGLE_VERTEXAI_GEMINI.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.GOOGLE_GENAI.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.GOOGLE_GENAI.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.DEEPSEEK_OPENAI_PROXY.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.DEEPSEEK_OPENAI_PROXY.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.HUGGINGFACE.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.HUGGINGFACE.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.MINIMAX.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.MINIMAX.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.MISTRAL_AI.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.MISTRAL_AI.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.OCI_GENAI_COHERE.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.OCI_GENAI_COHERE.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.OLLAMA.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.OLLAMA.getValue()));
-
-        MODEL_METADATA_MAP.put(
-                AiProviderEnum.ZHIPU_AI.getModelClassName(),
-                new ApiMetadata(AiProviderEnum.ZHIPU_AI.getValue()));
-
+        for (AiProviderEnum provider : AiProviderEnum.values()) {
+            if (provider.getModelClassName() != null && provider.getValue() != null) {
+                MODEL_METADATA_MAP.put(
+                        provider.getModelClassName(),
+                        new ApiMetadata(provider.getValue())
+                );
+            }
+        }
     }
 
     public static ApiMetadata getMetadata(Object chatModelInstance) {
+        ApiMetadata metadata = MODEL_METADATA_MAP.get(chatModelInstance.getClass().getName());
+        if (metadata == null) {
+            return null;
+        }
+
+        return metadata;
+    }
+
+    public static ApiMetadata getMetadata(String modelClassName) {
         try {
-            ApiMetadata metadata = MODEL_METADATA_MAP.get(chatModelInstance.getClass().getName());
+            ApiMetadata metadata = MODEL_METADATA_MAP.get(modelClassName);
             if (metadata == null) {
                 return null;
             }

@@ -23,7 +23,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 
-public class AnthropicApiInterceptor implements InstanceConstructorInterceptor {
+public class MiniMaxApiInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
@@ -33,6 +33,5 @@ public class AnthropicApiInterceptor implements InstanceConstructorInterceptor {
         }
 
         metadata.setBaseUrl((String) allArguments[0]);
-        metadata.setCompletionsPath((String) allArguments[1]);
     }
 }

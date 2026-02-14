@@ -47,21 +47,21 @@ public class CaseController {
                 Do not use outside knowledge. Be concise.
                 """;
 
-        chatClient
+        System.out.println(chatClient
                 .prompt("What's the weather in New York?")
                 .system(systemPrompt)
                 .tools(weatherTool)
                 .call()
-                .content();
+                .content());
 
-        chatClient
-                .prompt("What's the weather in New York?")
-                .system(systemPrompt)
-                .tools(weatherTool)
-                .stream()
-                .content()
-                .doOnNext(System.out::println)
-                .blockLast();
+//        chatClient
+//                .prompt("What's the weather in New York?")
+//                .system(systemPrompt)
+//                .tools(weatherTool)
+//                .stream()
+//                .content()
+//                .doOnNext(System.out::println)
+//                .blockLast();
 
 //        chatClient
 //                .prompt("What is Spring AI?")

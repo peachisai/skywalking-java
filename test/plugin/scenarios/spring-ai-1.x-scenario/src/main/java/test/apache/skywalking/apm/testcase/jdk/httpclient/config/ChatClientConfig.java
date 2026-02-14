@@ -17,8 +17,8 @@
 
 package test.apache.skywalking.apm.testcase.jdk.httpclient.config;
 
-import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,7 +26,12 @@ import org.springframework.context.annotation.Configuration;
 public class ChatClientConfig {
 
     @Bean
-    public ChatClient openAIChatClient(AnthropicChatModel model) {
+    public ChatClient openAIChatClient(OpenAiChatModel model) {
         return ChatClient.create(model);
     }
+
+//    @Bean
+//    public ChatClient anthropicChatClient(AnthropicChatModel model) {
+//        return ChatClient.create(model);
+//    }
 }
