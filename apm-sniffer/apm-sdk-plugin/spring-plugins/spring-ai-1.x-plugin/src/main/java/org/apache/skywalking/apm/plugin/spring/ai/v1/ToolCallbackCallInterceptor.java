@@ -27,6 +27,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.definition.ToolDefinition;
 
@@ -42,11 +43,12 @@ public class ToolCallbackCallInterceptor implements InstanceMethodsAroundInterce
 
         String toolName = definition.name();
 
-        AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/tool/" + toolName);
+        AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/tool/execute/" + toolName);
         span.setComponent(ComponentsDefine.SPRING_AI);
         SpanLayer.asGenAI(span);
 
         Tags.GEN_AI_TOOL_NAME.set(span, toolName);
+        Tags.GEN_AI_OPERATION_NAME.set(span, Constants.EXECUTE_TOOL);
 
         if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_TOOL_INPUT) {
             String toolInput = (String) allArguments[0];

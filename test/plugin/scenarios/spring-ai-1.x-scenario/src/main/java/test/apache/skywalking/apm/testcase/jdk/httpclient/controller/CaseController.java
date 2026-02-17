@@ -54,22 +54,14 @@ public class CaseController {
                 .call()
                 .content());
 
-//        chatClient
-//                .prompt("What's the weather in New York?")
-//                .system(systemPrompt)
-//                .tools(weatherTool)
-//                .stream()
-//                .content()
-//                .doOnNext(System.out::println)
-//                .blockLast();
-
-//        chatClient
-//                .prompt("What is Spring AI?")
-//                .system(systemPrompt)
-//                .stream()
-//                .content()
-//                .doOnNext(System.out::println)
-//                .blockLast();
+        chatClient
+                .prompt("What's the weather in New York?")
+                .system(systemPrompt)
+                .tools(weatherTool)
+                .stream()
+                .content()
+                .doOnNext(System.out::println)
+                .blockLast();
 
         return "success";
     }

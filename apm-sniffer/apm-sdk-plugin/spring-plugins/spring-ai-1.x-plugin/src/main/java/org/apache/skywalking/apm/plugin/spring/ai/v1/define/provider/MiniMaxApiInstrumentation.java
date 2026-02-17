@@ -33,7 +33,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 public class MiniMaxApiInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.springframework.ai.minimax.api.MiniMaxApi";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.provider.MiniMaxApiInterceptor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.provider.MiniMaxApiConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -46,7 +46,7 @@ public class MiniMaxApiInstrumentation extends ClassInstanceMethodsEnhancePlugin
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArguments(2).and(takesArgument(0, named("java.lang.String")));
+                        return takesArguments(4).and(takesArgument(0, named("java.lang.String")));
                     }
 
                     @Override

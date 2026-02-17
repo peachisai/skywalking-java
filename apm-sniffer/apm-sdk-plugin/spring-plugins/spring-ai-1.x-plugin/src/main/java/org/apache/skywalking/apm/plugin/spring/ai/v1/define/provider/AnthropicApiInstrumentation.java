@@ -33,7 +33,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 public class AnthropicApiInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.springframework.ai.anthropic.api.AnthropicApi";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.AnthropicApiConstructorInterceptor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.provider.AnthropicApiConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

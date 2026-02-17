@@ -23,16 +23,18 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 
-public class AnthropicApiInterceptor implements InstanceConstructorInterceptor {
+import static org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants.DEFAULT_COMPLETIONS_PATH;
+
+public class MistralAiApiConstructorInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
-        ChatModelMetadataResolver.ApiMetadata metadata = ChatModelMetadataResolver.getMetadata(AiProviderEnum.ANTHROPIC_CLAUDE.getModelClassName());
+        ChatModelMetadataResolver.ApiMetadata metadata = ChatModelMetadataResolver.getMetadata(AiProviderEnum.MISTRAL_AI.getModelClassName());
         if (metadata == null) {
             return;
         }
 
         metadata.setBaseUrl((String) allArguments[0]);
-        metadata.setCompletionsPath((String) allArguments[1]);
+        metadata.setCompletionsPath(DEFAULT_COMPLETIONS_PATH);
     }
 }

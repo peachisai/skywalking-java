@@ -33,7 +33,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 public class HuggingfaceChatModelInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.springframework.ai.huggingface.HuggingfaceChatModel";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.HuggingfaceChatModelInterceptor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.provider.HuggingfaceChatModelConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

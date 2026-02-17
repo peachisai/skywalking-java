@@ -30,10 +30,10 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-public class DeepSeekApiInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class OllamaApiInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.springframework.ai.deepseek.api.DeepSeekApi";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.provider.DeepSeekApiConstructorInterceptor";
+    private static final String ENHANCE_CLASS = "org.springframework.ai.ollama.api.OllamaApi";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.provider.OllamaApiConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -46,7 +46,7 @@ public class DeepSeekApiInstrumentation extends ClassInstanceMethodsEnhancePlugi
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArguments(8).and(takesArgument(0, named("java.lang.String"))).and(takesArgument(3, named("java.lang.String")));
+                        return takesArguments(4).and(takesArgument(0, named("java.lang.String")));
                     }
 
                     @Override

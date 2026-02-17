@@ -23,7 +23,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 
-public class HuggingfaceChatModelInterceptor implements InstanceConstructorInterceptor {
+public class AnthropicApiConstructorInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
@@ -32,6 +32,7 @@ public class HuggingfaceChatModelInterceptor implements InstanceConstructorInter
             return;
         }
 
-        metadata.setBaseUrl((String) allArguments[1]);
+        metadata.setBaseUrl((String) allArguments[0]);
+        metadata.setCompletionsPath((String) allArguments[1]);
     }
 }

@@ -33,7 +33,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 public class OpenAiApiInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.springframework.ai.openai.api.OpenAiApi";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.provider.OpenAiApiInterceptor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.provider.OpenAiApiConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

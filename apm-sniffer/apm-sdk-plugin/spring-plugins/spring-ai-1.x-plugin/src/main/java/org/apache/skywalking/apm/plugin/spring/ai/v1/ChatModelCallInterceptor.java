@@ -45,15 +45,18 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        AbstractSpan span = ContextManager.createExitSpan("Spring-ai/client/call", null);
-        SpanLayer.asGenAI(span);
         ChatModelMetadataResolver.ApiMetadata apiMetadata = ChatModelMetadataResolver.getMetadata(objInst);
+        String providerName = AiProviderEnum.UNKNOW.getValue();
+        String peer = null;
+
         if (apiMetadata != null) {
-            span.setPeer(apiMetadata.getPeer());
-            Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
-        } else {
-            Tags.GEN_AI_PROVIDER_NAME.set(span, AiProviderEnum.UNKNOW.getValue());
+            if (apiMetadata.getProviderName() != null) {
+                providerName = apiMetadata.getProviderName();
+            }
+            peer = apiMetadata.getPeer();
         }
+        AbstractSpan span = ContextManager.createExitSpan("Spring-ai/" + providerName + "/call", peer);
+        SpanLayer.asGenAI(span);
 
         Prompt prompt = (Prompt) allArguments[0];
         ChatOptions chatOptions = prompt.getOptions();
@@ -164,7 +167,9 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
             promptText = promptText.substring(0, limit);
         }
 
-        Tags.GEN_AI_PROMPT.set(span, promptText);
+
+
+        Tags.GEN_AI_INPUT_MESSAGES.set(span, promptText);
     }
 
     private void collectCompletion(AbstractSpan span, Generation generation) {
@@ -181,6 +186,6 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
         if (limit > 0 && completionText.length() > limit) {
             completionText = completionText.substring(0, limit);
         }
-        Tags.GEN_AI_COMPLETION.set(span, completionText);
+        Tags.GEN_AI_OUTPUT_MESSAGES.set(span, completionText);
     }
 }

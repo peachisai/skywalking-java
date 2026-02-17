@@ -24,4 +24,5 @@ spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.provider.Deep
 spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.provider.HuggingfaceChatModelInstrumentation
 spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.provider.MiniMaxApiInstrumentation
 spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.provider.MistralAiApiInstrumentation
+spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.provider.OllamaApiInstrumentation
 spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.provider.OpenAiApiInstrumentation

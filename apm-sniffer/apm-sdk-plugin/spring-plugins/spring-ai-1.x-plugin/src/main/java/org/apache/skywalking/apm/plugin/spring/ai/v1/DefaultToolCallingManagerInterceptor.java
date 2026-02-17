@@ -35,7 +35,7 @@ public class DefaultToolCallingManagerInterceptor implements InstanceMethodsArou
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/client/executeTool");
+        AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/tool/call");
         span.setComponent(ComponentsDefine.SPRING_AI);
 
         ContextView reactorCtx = ToolCallReactiveContextHolder.getContext();

@@ -30,6 +30,7 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -47,12 +48,18 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        AbstractSpan span = ContextManager.createExitSpan("Spring-ai/client/stream", null);
         ChatModelMetadataResolver.ApiMetadata apiMetadata = ChatModelMetadataResolver.getMetadata(objInst);
+        String providerName = AiProviderEnum.UNKNOW.getValue();
+        String peer = null;
+
         if (apiMetadata != null) {
-            span.setPeer(apiMetadata.getPeer());
-            Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
+            if (apiMetadata.getProviderName() != null) {
+                providerName = apiMetadata.getProviderName();
+            }
+            peer = apiMetadata.getPeer();
         }
+        AbstractSpan span = ContextManager.createExitSpan("Spring-ai/" + providerName + "/stream", peer);
+        SpanLayer.asGenAI(span);
 
         span.setComponent(ComponentsDefine.SPRING_AI);
         SpanLayer.asGenAI(span);
