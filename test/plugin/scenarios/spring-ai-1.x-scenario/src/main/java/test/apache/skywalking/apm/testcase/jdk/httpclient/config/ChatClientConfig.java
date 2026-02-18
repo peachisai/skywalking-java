@@ -18,9 +18,6 @@
 package test.apache.skywalking.apm.testcase.jdk.httpclient.config;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.minimax.MiniMaxChatModel;
-import org.springframework.ai.mistralai.MistralAiChatModel;
-import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,19 +29,4 @@ public class ChatClientConfig {
     public ChatClient openAIChatClient(OpenAiChatModel model) {
         return ChatClient.create(model);
     }
-
-//    @Bean
-//    public ChatClient anthropicChatClient(MiniMaxChatModel model) {
-//        return ChatClient.create(model);
-//    }
-
-//    @Bean
-//    public ChatClient anthropicChatClient(MistralAiChatModel model) {
-//        return ChatClient.create(model);
-//    }
-
-//    @Bean
-//    public ChatClient anthropicChatClient(OllamaChatModel model) {
-//        return ChatClient.create(model);
-//    }
 }

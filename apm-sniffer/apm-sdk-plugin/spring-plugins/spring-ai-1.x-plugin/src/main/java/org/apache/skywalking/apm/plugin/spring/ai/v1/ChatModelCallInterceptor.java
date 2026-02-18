@@ -30,8 +30,7 @@ import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataRes
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
-import org.springframework.ai.chat.client.ChatClientRequest;
-import org.springframework.ai.chat.client.ChatClientResponse;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -66,6 +65,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
 
         span.setComponent(ComponentsDefine.SPRING_AI);
         Tags.GEN_AI_OPERATION_NAME.set(span, Constants.CHAT);
+        Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
         Tags.GEN_AI_REQUEST_MODEL.set(span, chatOptions.getModel());
         Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
         Tags.GEN_AI_TOP_K.set(span, String.valueOf(chatOptions.getTopK()));
@@ -79,14 +79,13 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
         }
 
         try {
-            AbstractSpan span = ContextManager.activeSpan();
-            ChatClientResponse response = (ChatClientResponse) ret;
-            if (response == null || response.chatResponse() == null) {
-                return ret;
+            ChatResponse response = (ChatResponse) ret;
+            if (response == null) {
+                return null;
             }
 
-            ChatResponse chatResponse = response.chatResponse();
-            ChatResponseMetadata metadata = chatResponse.getMetadata();
+            AbstractSpan span = ContextManager.activeSpan();
+            ChatResponseMetadata metadata = response.getMetadata();
 
             long totalTokens = 0;
 
@@ -113,7 +112,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
                 }
             }
 
-            Generation generation = chatResponse.getResult();
+            Generation generation = response.getResult();
             if (generation != null && generation.getMetadata() != null) {
                 String finishReason = generation.getMetadata().getFinishReason();
                 if (finishReason != null) {
@@ -152,12 +151,12 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
     }
 
     private void collectPrompt(AbstractSpan span, Object[] allArguments) {
-        ChatClientRequest request = (ChatClientRequest) allArguments[0];
-        if (request == null) {
+        Prompt prompt = (Prompt) allArguments[0];
+        if (prompt == null) {
             return;
         }
 
-        String promptText = request.prompt().getContents();
+        String promptText = prompt.getContents();
         if (promptText == null) {
             return;
         }
@@ -167,7 +166,10 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
             promptText = promptText.substring(0, limit);
         }
 
-
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Message instruction : prompt.getInstructions()) {
+            stringBuilder.append(instruction.getText());
+        }
 
         Tags.GEN_AI_INPUT_MESSAGES.set(span, promptText);
     }

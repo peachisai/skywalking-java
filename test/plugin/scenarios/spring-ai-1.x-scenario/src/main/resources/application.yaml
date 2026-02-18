@@ -22,7 +22,7 @@ server:
 spring:
   ai:
     openai:
-      api-key: noaichaPCNAC09DHBWQCOACNacoi
+      api-key: xxxxxxxxxxxxxxxxxxxxxxxxxxx
       base-url: http://localhost:8080/spring-ai-1.x-scenario/llm
       chat:
         options:
@@ -30,5 +30,6 @@ spring:
           temperature: 0.7
           max-tokens: 1000
           top-p: 0.9
+
 
 
