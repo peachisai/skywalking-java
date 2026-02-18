@@ -5,6 +5,7 @@ Release Notes.
 9.6.0
 ------------------
 
+* Add CLAUDE.md for AI assistant guidance.
 * Bump up agent-oap protocol to latest(16c51358ebcf42629bf4ffdf952253971f20eb25).
 * Bump up gRPC to v1.74.0.
 * Bump up netty to v4.1.124.Final.
@@ -27,6 +28,7 @@ Release Notes.
 * Bump up Lombok to v1.18.42 to adopt JDK25 compiling.
 * Add `eclipse-temurin:25-jre` as another base image.
 * Add JDK25 plugin tests for Spring 6.
+* Ignore classes starting with "sun.nio.cs" in bytebuddy due to potential class loading deadlock.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)
 
