@@ -47,12 +47,12 @@ public class CaseController {
                 Do not use outside knowledge. Be concise.
                 """;
 
-        System.out.println(chatClient
+        chatClient
                 .prompt("What's the weather in New York?")
                 .system(systemPrompt)
                 .tools(weatherTool)
                 .call()
-                .content());
+                .content();
 
         chatClient
                 .prompt("What's the weather in New York?")
