@@ -241,21 +241,6 @@ public final class Tags {
     public static final StringTag GEN_AI_STREAM_TTFR = new StringTag(40, "gen_ai.stream.ttfr");
 
     /**
-     * GEN_AI_VECTOR_STORE_TOP_K represents the target number of top results to return from the vector store.
-     */
-    public static final StringTag GEN_AI_VECTOR_STORE_TOP_K = new StringTag(41, "gen_ai.vector_store.top_k");
-
-    /**
-     * GEN_AI_VECTOR_STORE_FILTER_EXPRESSION represents the filter expression used in the vector store search.
-     */
-    public static final StringTag GEN_AI_VECTOR_STORE_FILTER_EXPRESSION = new StringTag(42, "gen_ai.vector_store.filter_expression");
-
-    /**
-     * GEN_AI_VECTOR_STORE_RECORD_IDS represents the unique identifiers of the records retrieved from the vector store.
-     */
-    public static final StringTag GEN_AI_VECTOR_STORE_RECORD_IDS = new StringTag(43, "gen_ai.vector_store.record_ids");
-
-    /**
      * GEN_AI_INPUT_MESSAGES represents the chat history provided to the model as an input.
      */
     public static final StringTag GEN_AI_INPUT_MESSAGES = new StringTag(44, "gen_ai.input.messages");
