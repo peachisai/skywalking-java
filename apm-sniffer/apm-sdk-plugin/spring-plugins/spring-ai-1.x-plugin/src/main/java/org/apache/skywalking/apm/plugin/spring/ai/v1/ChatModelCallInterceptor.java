@@ -26,11 +26,13 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
-import org.springframework.ai.chat.messages.Message;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.messages.InputMessages;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.messages.OutputMessages;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -45,17 +47,22 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         ChatModelMetadataResolver.ApiMetadata apiMetadata = ChatModelMetadataResolver.getMetadata(objInst);
-        String providerName = AiProviderEnum.UNKNOW.getValue();
+        String providerName = AiProviderEnum.UNKNOWN.getValue();
+        OfficialComponent component = ComponentsDefine.SPRING_AI_UNKNOWN;
         String peer = null;
 
         if (apiMetadata != null) {
             if (apiMetadata.getProviderName() != null) {
                 providerName = apiMetadata.getProviderName();
+                component = apiMetadata.getComponent();
             }
             peer = apiMetadata.getPeer();
         }
         AbstractSpan span = ContextManager.createExitSpan("Spring-ai/" + providerName + "/call", peer);
         SpanLayer.asGenAI(span);
+        span.setComponent(component);
+        Tags.GEN_AI_OPERATION_NAME.set(span, Constants.CHAT);
+        Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
 
         Prompt prompt = (Prompt) allArguments[0];
         ChatOptions chatOptions = prompt.getOptions();
@@ -63,9 +70,6 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
             return;
         }
 
-        span.setComponent(ComponentsDefine.SPRING_AI);
-        Tags.GEN_AI_OPERATION_NAME.set(span, Constants.CHAT);
-        Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
         Tags.GEN_AI_REQUEST_MODEL.set(span, chatOptions.getModel());
         Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
         Tags.GEN_AI_TOP_K.set(span, String.valueOf(chatOptions.getTopK()));
@@ -120,7 +124,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
                 }
             }
 
-            collectContent(span, allArguments, generation, totalTokens);
+            collectContent(span, allArguments, response, totalTokens);
         } finally {
             ContextManager.stopSpan();
         }
@@ -134,7 +138,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
         }
     }
 
-    private void collectContent(AbstractSpan span, Object[] allArguments, Generation generation, long totalTokens) {
+    private void collectContent(AbstractSpan span, Object[] allArguments, ChatResponse response, long totalTokens) {
         int tokenThreshold = SpringAiPluginConfig.Plugin.SpringAi.CONTENT_COLLECT_THRESHOLD_TOKENS;
 
         if (tokenThreshold >= 0 && totalTokens < tokenThreshold) {
@@ -146,7 +150,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
         }
 
         if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_COMPLETION) {
-            collectCompletion(span, generation);
+            collectCompletion(span, response);
         }
     }
 
@@ -161,33 +165,25 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
             return;
         }
 
+        InputMessages inputMessages = InputMessages.fromPrompt(prompt);
+        String inputMessagesJson = inputMessages.toJson();
         int limit = SpringAiPluginConfig.Plugin.SpringAi.PROMPT_LENGTH_LIMIT;
-        if (limit > 0 && promptText.length() > limit) {
-            promptText = promptText.substring(0, limit);
+        if (limit > 0 && inputMessagesJson.length() > limit) {
+            inputMessagesJson = inputMessagesJson.substring(0, limit);
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Message instruction : prompt.getInstructions()) {
-            stringBuilder.append(instruction.getText());
-        }
-
-        Tags.GEN_AI_INPUT_MESSAGES.set(span, promptText);
+        Tags.GEN_AI_INPUT_MESSAGES.set(span, inputMessagesJson);
     }
 
-    private void collectCompletion(AbstractSpan span, Generation generation) {
-        if (generation == null || generation.getOutput() == null) {
-            return;
-        }
+    private void collectCompletion(AbstractSpan span, ChatResponse response) {
 
-        String completionText = generation.getOutput().getText();
-        if (completionText == null) {
-            return;
-        }
-
+        OutputMessages outputMessages = OutputMessages.fromChatResponse(response);
+        String outputMessagesJson = outputMessages.toJson();
         int limit = SpringAiPluginConfig.Plugin.SpringAi.COMPLETION_LENGTH_LIMIT;
-        if (limit > 0 && completionText.length() > limit) {
-            completionText = completionText.substring(0, limit);
+
+        if (limit > 0 && outputMessagesJson.length() > limit) {
+            outputMessagesJson = outputMessagesJson.substring(0, limit);
         }
-        Tags.GEN_AI_OUTPUT_MESSAGES.set(span, completionText);
+        Tags.GEN_AI_OUTPUT_MESSAGES.set(span, outputMessagesJson);
     }
 }

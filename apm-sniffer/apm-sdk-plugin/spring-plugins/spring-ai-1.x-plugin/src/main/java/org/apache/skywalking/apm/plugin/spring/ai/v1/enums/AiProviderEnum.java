@@ -20,7 +20,7 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1.enums;
 
 public enum AiProviderEnum {
 
-    UNKNOW("unknow", null),
+    UNKNOWN("unknown", null),
 
     ANTHROPIC_CLAUDE("anthropic", "org.springframework.ai.anthropic.AnthropicChatModel"),
 

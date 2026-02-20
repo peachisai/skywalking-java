@@ -142,6 +142,22 @@ public class LLMMockController {
                         }
                     ],
                     "created": 1768490813,
+                    "id": "chatcmpl-CyJXJt7gxwDgz",
+                                        "usage": {
+                        "completion_tokens": 17,
+                        "completion_tokens_details": {
+                            "accepted_prediction_tokens": 0,
+                            "audio_tokens": 0,
+                            "reasoning_tokens": 0,
+                            "rejected_prediction_tokens": 0
+                        },
+                        "prompt_tokens": 52,
+                        "prompt_tokens_details": {
+                            "audio_tokens": 0,
+                            "cached_tokens": 0
+                        },
+                        "total_tokens": 69
+                    }
                     "model": "gpt-4.1-2025-04-14",
                     "object": "chat.completion"
                 }

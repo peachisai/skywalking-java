@@ -27,10 +27,13 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.messages.InputMessages;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.messages.OutputMessages;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -41,6 +44,8 @@ import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,19 +54,21 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         ChatModelMetadataResolver.ApiMetadata apiMetadata = ChatModelMetadataResolver.getMetadata(objInst);
-        String providerName = AiProviderEnum.UNKNOW.getValue();
+        String providerName = AiProviderEnum.UNKNOWN.getValue();
+        OfficialComponent component = ComponentsDefine.SPRING_AI_UNKNOWN;
         String peer = null;
 
         if (apiMetadata != null) {
             if (apiMetadata.getProviderName() != null) {
                 providerName = apiMetadata.getProviderName();
+                component = apiMetadata.getComponent();
             }
             peer = apiMetadata.getPeer();
         }
         AbstractSpan span = ContextManager.createExitSpan("Spring-ai/" + providerName + "/stream", peer);
         SpanLayer.asGenAI(span);
 
-        span.setComponent(ComponentsDefine.SPRING_AI);
+        span.setComponent(component);
         SpanLayer.asGenAI(span);
 
         Prompt prompt = (Prompt) allArguments[0];
@@ -212,27 +219,36 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
         if (prompt == null) {
             return;
         }
-        String promptText = prompt.getContents();
-        if (promptText == null) {
-            return;
-        }
+
+        InputMessages inputMessages = InputMessages.fromPrompt(prompt);
+        String inputMessagesJson = inputMessages.toJson();
+
         int limit = SpringAiPluginConfig.Plugin.SpringAi.PROMPT_LENGTH_LIMIT;
-        Tags.GEN_AI_INPUT_MESSAGES.set(span, truncate(promptText, limit));
+        if (limit > 0 && inputMessagesJson.length() > limit) {
+            inputMessagesJson = inputMessagesJson.substring(0, limit);
+        }
+
+        Tags.GEN_AI_INPUT_MESSAGES.set(span, inputMessagesJson);
     }
 
     private void collectCompletion(AbstractSpan span, StreamState state) {
-        int limit = SpringAiPluginConfig.Plugin.SpringAi.COMPLETION_LENGTH_LIMIT;
-        Tags.GEN_AI_OUTPUT_MESSAGES.set(span, truncate(state.completionBuilder.toString(), limit));
-    }
 
-    private String truncate(String s, int limit) {
-        if (s == null) {
-            return null;
+        String fullText = state.completionBuilder.toString();
+        String finishReason = state.finishReason.get();
+        List<InputMessages.MessagePart> parts = new ArrayList<>();
+        if (fullText != null && !fullText.isEmpty()) {
+            parts.add(new InputMessages.TextPart(fullText));
         }
-        if (limit > 0 && s.length() > limit) {
-            return s.substring(0, limit);
+
+        OutputMessages outputMessages = OutputMessages.create().append(OutputMessages.OutputMessage.create("assistant", parts, finishReason));
+        String outputMessagesJson = outputMessages.toJson();
+
+        int limit = SpringAiPluginConfig.Plugin.SpringAi.COMPLETION_LENGTH_LIMIT;
+        if (limit > 0 && outputMessagesJson.length() > limit) {
+            outputMessagesJson = outputMessagesJson.substring(0, limit);
         }
-        return s;
+
+        Tags.GEN_AI_OUTPUT_MESSAGES.set(span, outputMessagesJson);
     }
 
     private Long readAndClearStartTime() {

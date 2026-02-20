@@ -20,6 +20,8 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1.common;
 
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
+import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 
 import java.util.HashMap;
@@ -36,29 +38,56 @@ public class ChatModelMetadataResolver {
             if (provider.getModelClassName() != null && provider.getValue() != null) {
                 MODEL_METADATA_MAP.put(
                         provider.getModelClassName(),
-                        new ApiMetadata(provider.getValue())
+                        new ApiMetadata(provider.getValue(), matchComponent(provider))
                 );
             }
         }
     }
 
+    private static OfficialComponent matchComponent(AiProviderEnum provider) {
+        switch (provider) {
+            case ANTHROPIC_CLAUDE:
+                return ComponentsDefine.SPRING_AI_ANTHROPIC;
+            case AMAZON_BEDROCK_CONVERSE:
+                return ComponentsDefine.SPRING_AI_BEDROCK;
+            case AZURE_OPENAI:
+                return ComponentsDefine.SPRING_AI_AZURE_OPENAI;
+            case OCI_GENAI_COHERE:
+                return ComponentsDefine.SPRING_AI_COHERE;
+            case DEEPSEEK:
+                return ComponentsDefine.SPRING_AI_DEEPSEEK;
+            case GOOGLE_GENAI:
+                return ComponentsDefine.SPRING_AI_GOOGLE_GENAI;
+            case GOOGLE_VERTEXAI_GEMINI:
+                return ComponentsDefine.SPRING_AI_VERTEXAI;
+            case MISTRAL_AI:
+                return ComponentsDefine.SPRING_AI_MISTRAL_AI;
+            case OPENAI:
+                return ComponentsDefine.SPRING_AI_OPENAI;
+            case HUGGINGFACE:
+                return ComponentsDefine.SPRING_AI_HUGGINGFACE;
+            case MINIMAX:
+                return ComponentsDefine.SPRING_AI_MINIMAX;
+            case OLLAMA:
+                return ComponentsDefine.SPRING_AI_OLLAMA;
+            case OPENAI_SDK_OFFICIAL:
+                return ComponentsDefine.SPRING_AI_OPENAI_SDK;
+            case ZHIPU_AI:
+                return ComponentsDefine.SPRING_AI_ZHIPU_AI;
+            case UNKNOWN:
+            default:
+                return ComponentsDefine.SPRING_AI_UNKNOWN;
+        }
+    }
+
     public static ApiMetadata getMetadata(Object chatModelInstance) {
         ApiMetadata metadata = MODEL_METADATA_MAP.get(chatModelInstance.getClass().getName());
-        if (metadata == null) {
-            return null;
-        }
-
         return metadata;
     }
 
     public static ApiMetadata getMetadata(String modelClassName) {
         try {
-            ApiMetadata metadata = MODEL_METADATA_MAP.get(modelClassName);
-            if (metadata == null) {
-                return null;
-            }
-
-            return metadata;
+            return MODEL_METADATA_MAP.get(modelClassName);
         } catch (Exception e) {
             LOGGER.error("spring-ai plugin get modelMetadata error: ", e);
             return null;
@@ -68,15 +97,21 @@ public class ChatModelMetadataResolver {
     public static class ApiMetadata {
 
         private final String providerName;
+        private final OfficialComponent component;
         private volatile String baseUrl;
         private volatile String completionsPath;
 
-        ApiMetadata(String providerName) {
+        ApiMetadata(String providerName, OfficialComponent component) {
             this.providerName = providerName;
+            this.component = component;
         }
 
         public String getProviderName() {
             return providerName;
+        }
+
+        public OfficialComponent getComponent() {
+            return component;
         }
 
         public String getBaseUrl() {
