@@ -143,7 +143,7 @@ public class LLMMockController {
                     ],
                     "created": 1768490813,
                     "id": "chatcmpl-CyJXJt7gxwDgz",
-                                        "usage": {
+                    "usage": {
                         "completion_tokens": 17,
                         "completion_tokens_details": {
                             "accepted_prediction_tokens": 0,
@@ -176,6 +176,7 @@ public class LLMMockController {
                        }
                    ],
                    "created": 1768491057,
+                   "id":"chatcmpl-CyJXJt7gxwDgz",
                    "model": "gpt-4.1-2025-04-14",
                    "object": "chat.completion"
                 }

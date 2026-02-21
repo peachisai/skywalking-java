@@ -57,7 +57,6 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
         span.setComponent(apiMetadata.getComponent());
         Tags.GEN_AI_OPERATION_NAME.set(span, Constants.CHAT);
         Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
-        SpanLayer.asGenAI(span);
 
         Prompt prompt = (Prompt) allArguments[0];
         if (prompt == null) {
@@ -193,8 +192,14 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
         if (usage == null) {
             return 0;
         }
-        Tags.GEN_AI_USAGE_INPUT_TOKENS.set(span, String.valueOf(usage.getPromptTokens()));
-        Tags.GEN_AI_USAGE_OUTPUT_TOKENS.set(span, String.valueOf(usage.getCompletionTokens()));
+
+        if (usage.getPromptTokens() != null) {
+            Tags.GEN_AI_USAGE_INPUT_TOKENS.set(span, String.valueOf(usage.getPromptTokens()));
+        }
+
+        if (usage.getCompletionTokens() != null) {
+            Tags.GEN_AI_USAGE_OUTPUT_TOKENS.set(span, String.valueOf(usage.getCompletionTokens()));
+        }
 
         long total = usage.getTotalTokens() != null ? usage.getTotalTokens() : 0;
         Tags.GEN_AI_CLIENT_TOKEN_USAGE.set(span, String.valueOf(total));
