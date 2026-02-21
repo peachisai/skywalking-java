@@ -203,23 +203,26 @@ public class MessageService {
                 maxMessageNum,
                 invisibleDuration
             );
-            future0.thenComposeAsync(messages -> {
+            future0.whenCompleteAsync((messages, throwable) -> {
+                if (null != throwable) {
+                    log.error("Failed to receive message from remote", throwable);
+                    return;
+                }
                 log.info("Received {} message(s)", messages.size());
                 final Map<MessageView, CompletableFuture<Void>> map =
                     messages.stream().collect(Collectors.toMap(message -> message, consumer::ackAsync));
-                List<CompletableFuture<Void>> ackFutures = map.entrySet().stream().map(entry -> {
+                for (Map.Entry<MessageView, CompletableFuture<Void>> entry : map.entrySet()) {
                     final MessageId messageId = entry.getKey().getMessageId();
                     final CompletableFuture<Void> future = entry.getValue();
-                    return future.whenCompleteAsync((v, t) -> {
+                    future.whenCompleteAsync((v, t) -> {
                         if (null != t) {
                             log.error("Message is failed to be acknowledged, messageId={}", messageId, t);
                             return;
                         }
                         log.info("Message is acknowledged successfully, messageId={}", messageId);
                     }, ackCallbackExecutor);
-                }).collect(Collectors.toList());
-                return CompletableFuture.allOf(ackFutures.toArray(new CompletableFuture[0]));
-            }, receiveCallbackExecutor).join();
+                }
+            }, receiveCallbackExecutor);
         } catch (Exception e) {
             log.error("consumer start error", e);
         }
@@ -240,8 +243,6 @@ public class MessageService {
         MQAdminStartup.main(subArgs);
     }
 
-    public static volatile boolean CONSUMER_READY = false;
-
     public static class MyConsumer implements MessageListener {
 
         @Override
@@ -249,7 +250,6 @@ public class MessageService {
             log.info("Consume message successfully, messageId={},messageBody={}", messageView.getMessageId(),
                      messageView.getBody().toString()
             );
-            CONSUMER_READY = true;
             return ConsumeResult.SUCCESS;
         }
     }
