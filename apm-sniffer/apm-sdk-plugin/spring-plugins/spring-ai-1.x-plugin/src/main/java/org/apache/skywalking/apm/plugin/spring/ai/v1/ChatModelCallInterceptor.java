@@ -25,12 +25,9 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
-import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.messages.InputMessages;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.messages.OutputMessages;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
@@ -47,20 +44,9 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         ChatModelMetadataResolver.ApiMetadata apiMetadata = ChatModelMetadataResolver.getMetadata(objInst);
-        String providerName = AiProviderEnum.UNKNOWN.getValue();
-        OfficialComponent component = ComponentsDefine.SPRING_AI_UNKNOWN;
-        String peer = null;
-
-        if (apiMetadata != null) {
-            if (apiMetadata.getProviderName() != null) {
-                providerName = apiMetadata.getProviderName();
-                component = apiMetadata.getComponent();
-            }
-            peer = apiMetadata.getPeer();
-        }
-        AbstractSpan span = ContextManager.createExitSpan("Spring-ai/" + providerName + "/call", peer);
+        AbstractSpan span = ContextManager.createExitSpan("Spring-ai/" + apiMetadata.getProviderName() + "/call", apiMetadata.getPeer());
         SpanLayer.asGenAI(span);
-        span.setComponent(component);
+        span.setComponent(apiMetadata.getComponent());
         Tags.GEN_AI_OPERATION_NAME.set(span, Constants.CHAT);
         Tags.GEN_AI_PROVIDER_NAME.set(span, apiMetadata.getProviderName());
 
@@ -70,10 +56,18 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
             return;
         }
 
-        Tags.GEN_AI_REQUEST_MODEL.set(span, chatOptions.getModel());
-        Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
-        Tags.GEN_AI_TOP_K.set(span, String.valueOf(chatOptions.getTopK()));
-        Tags.GEN_AI_TOP_P.set(span, String.valueOf(chatOptions.getTopP()));
+        if (chatOptions.getModel() != null) {
+            Tags.GEN_AI_REQUEST_MODEL.set(span, chatOptions.getModel());
+        }
+        if (chatOptions.getTemperature() != null) {
+            Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
+        }
+        if (chatOptions.getTopK() != null) {
+            Tags.GEN_AI_TOP_K.set(span, String.valueOf(chatOptions.getTopK()));
+        }
+        if (chatOptions.getTopP() != null) {
+            Tags.GEN_AI_TOP_P.set(span, String.valueOf(chatOptions.getTopP()));
+        }
     }
 
     @Override
@@ -83,10 +77,11 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
         }
 
         try {
-            ChatResponse response = (ChatResponse) ret;
-            if (response == null) {
-                return null;
+            if (!(ret instanceof ChatResponse)) {
+                return ret;
             }
+
+            ChatResponse response = (ChatResponse) ret;
 
             AbstractSpan span = ContextManager.activeSpan();
             ChatResponseMetadata metadata = response.getMetadata();

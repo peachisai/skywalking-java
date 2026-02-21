@@ -20,7 +20,6 @@ segmentItems:
 
       - segmentId: not null
         spans:
-
           - operationName: GET:/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case
             parentSpanId: -1
             spanId: 0
@@ -36,6 +35,7 @@ segmentItems:
             parentSpanId: 0
             spanId: 1
             spanLayer: UNRECOGNIZED
+            componentId: 173
             spanType: Exit
             peer: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions
             tags:
@@ -44,7 +44,15 @@ segmentItems:
               - { key: gen_ai.request.model, value: gpt-4.1-2025-04-14 }
               - { key: gen_ai.request.temperature, value: '0.7' }
               - { key: gen_ai.request.top_p, value: '0.9' }
-              - { key: gen_ai.output.messages, value: "The weather in New York is currently sunny with a temperature of 10°C." }
+              - { key: gen_ai.request.top_k, value: null }
+              - { key: gen_ai.response.id, value: '' }
+              - { key: gen_ai.response.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.usage.input_tokens, value: '52' }
+              - { key: gen_ai.usage.output_tokens, value: '17' }
+              - { key: gen_ai.client.token.usage, value: '69' }
+              - { key: gen_ai.response.finish_reasons, value: STOP }
+              - { key: gen_ai.input.messages, value: '[{"role":"system","parts":[{"type":"text","content":"You are a professional technical assistant.\\nStrictly use the provided context to answer questions.\\nIf the information is not in the context, say: \\\"I''m sorry, I don''t have that information in my knowledge base.\\\"\\nDo not use outside knowledge. Be concise.\\n"}]},{"role":"user","parts":[{"type":"text","content":"What''s the weather in New York?"}]}]' }
+              - { key: gen_ai.output.messages, value: '[{"role":"assistant","parts":[{"type":"text","content":"The weather in New York is currently sunny with a temperature of 10°C."}],"finish_reason":"stop"}]' }
 
           - operationName: Spring-ai/tool/call
             parentSpanId: 1
@@ -62,65 +70,3 @@ segmentItems:
               - { key: gen_ai.operation.name, value: execute_tool }
               - { key: gen_ai.tool.call.arguments, value: '{"arg0":"new york"}' }
               - { key: gen_ai.tool.call.result, value: '"Sunny, 10°C"' }
-
-          - operationName: Spring-ai/openai/stream
-            parentSpanId: 0
-            spanId: 4
-            spanLayer: UNRECOGNIZED
-            spanType: Exit
-            peer: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions
-            tags:
-              - { key: gen_ai.operation.name, value: chat }
-              - { key: gen_ai.provider.name, value: openai }
-              - { key: gen_ai.request.model, value: gpt-4.1-2025-04-14 }
-              - { key: gen_ai.stream.ttfr, value: '385' }
-              - { key: gen_ai.response.id, value: chatcmpl-cb9fe83f-bc71-4e48-a26e-69c444e73d9d }
-
-          - operationName: /spring-ai-1.x-scenario/llm/v1/chat/completions
-            parentSpanId: 0
-            spanId: 5
-            spanLayer: Http
-            spanType: Exit
-            componentId: 99
-            tags:
-              - { key: url, value: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions }
-              - { key: http.method, value: POST }
-              - { key: http.status_code, value: '200' }
-
-      - segmentId: not null
-        spans:
-
-          - operationName: Spring-ai/tool/call
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: Unknown
-            spanType: Local
-            refs:
-              - { parentSpanId: 4, type: CROSS_THREAD }
-
-          - operationName: Spring-ai/tool/execute/get_weather
-            parentSpanId: 0
-            spanId: 1
-            spanLayer: UNRECOGNIZED
-            spanType: Local
-            tags:
-              - { key: gen_ai.tool.name, value: get_weather }
-              - { key: gen_ai.operation.name, value: execute_tool }
-              - { key: gen_ai.tool.call.arguments, value: '{"arg0":"new york"}' }
-              - { key: gen_ai.tool.call.result, value: '"Sunny, 10°C"' }
-
-      - segmentId: not null
-        spans:
-
-          - operationName: /spring-ai-1.x-scenario/llm/v1/chat/completions
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: Http
-            spanType: Exit
-            componentId: 99
-            refs:
-              - { parentSpanId: 4, type: CROSS_THREAD }
-            tags:
-              - { key: url, value: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions }
-              - { key: http.method, value: POST }
-              - { key: http.status_code, value: '200' }

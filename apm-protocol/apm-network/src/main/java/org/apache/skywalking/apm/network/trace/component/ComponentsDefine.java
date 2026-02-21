@@ -291,10 +291,8 @@ public class ComponentsDefine {
 
     public static final OfficialComponent SPRING_AI_OLLAMA = new OfficialComponent(176, "spring-ai-ollama");
 
-    public static final OfficialComponent SPRING_AI_OPENAI_SDK = new OfficialComponent(177, "spring-ai-openai-sdk");
+    public static final OfficialComponent SPRING_AI_ZHIPU_AI = new OfficialComponent(177, "spring-ai-zhipu-ai");
 
-    public static final OfficialComponent SPRING_AI_ZHIPU_AI = new OfficialComponent(178, "spring-ai-zhipu-ai");
-
-    public static final OfficialComponent SPRING_AI = new OfficialComponent(179, "spring-ai");
+    public static final OfficialComponent SPRING_AI = new OfficialComponent(178, "spring-ai");
 
 }

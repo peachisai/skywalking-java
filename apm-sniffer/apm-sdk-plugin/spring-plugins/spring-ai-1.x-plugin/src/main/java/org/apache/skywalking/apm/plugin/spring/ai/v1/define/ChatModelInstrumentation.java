@@ -84,7 +84,7 @@ public class ChatModelInstrumentation extends ClassInstanceMethodsEnhancePluginD
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return false;
+                        return true;
                     }
                 }
         };

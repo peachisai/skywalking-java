@@ -157,7 +157,7 @@ public class LLMMockController {
                             "cached_tokens": 0
                         },
                         "total_tokens": 69
-                    }
+                    },
                     "model": "gpt-4.1-2025-04-14",
                     "object": "chat.completion"
                 }

@@ -24,6 +24,7 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.enums.AiProviderEnum;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class ChatModelMetadataResolver {
             case OLLAMA:
                 return ComponentsDefine.SPRING_AI_OLLAMA;
             case OPENAI_SDK_OFFICIAL:
-                return ComponentsDefine.SPRING_AI_OPENAI_SDK;
+                return ComponentsDefine.SPRING_AI_OPENAI;
             case ZHIPU_AI:
                 return ComponentsDefine.SPRING_AI_ZHIPU_AI;
             case UNKNOWN:
@@ -80,8 +81,12 @@ public class ChatModelMetadataResolver {
         }
     }
 
+    @NotNull
     public static ApiMetadata getMetadata(Object chatModelInstance) {
         ApiMetadata metadata = MODEL_METADATA_MAP.get(chatModelInstance.getClass().getName());
+        if (metadata == null) {
+            MODEL_METADATA_MAP.get(AiProviderEnum.UNKNOWN);
+        }
         return metadata;
     }
 

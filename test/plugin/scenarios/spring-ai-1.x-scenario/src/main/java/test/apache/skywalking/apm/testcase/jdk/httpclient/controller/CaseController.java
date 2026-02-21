@@ -54,15 +54,6 @@ public class CaseController {
                 .call()
                 .content();
 
-        chatClient
-                .prompt("What's the weather in New York?")
-                .system(systemPrompt)
-                .tools(weatherTool)
-                .stream()
-                .content()
-                .doOnNext(System.out::println)
-                .blockLast();
-
         return "success";
     }
 }
