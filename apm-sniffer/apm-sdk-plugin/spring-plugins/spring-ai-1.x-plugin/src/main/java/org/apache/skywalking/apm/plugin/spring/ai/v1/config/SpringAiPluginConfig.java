@@ -30,32 +30,32 @@ public class SpringAiPluginConfig {
             /**
              * Whether to collect the prompt content (input text) of the GenAI request.
              */
-            public static boolean COLLECT_PROMPT = false;
+            public static boolean COLLECT_INPUT_MESSAGES = false;
 
             /**
              * Whether to collect the completion content (output text) of the GenAI response.
              */
-            public static boolean COLLECT_COMPLETION = false;
+            public static boolean COLLECT_OUTPUT_MESSAGES = false;
 
             /**
              * The maximum characters of the collected prompt content.
              * If the content exceeds this limit, it will be truncated.
              * Use a negative value to represent no limit, but be aware this could cause OOM.
              */
-            public static int PROMPT_LENGTH_LIMIT = 1024;
+            public static int INPUT_MESSAGES_LENGTH_LIMIT = 1024;
 
             /**
              * The maximum characters of the collected completion content.
              * If the content exceeds this limit, it will be truncated.
              * Use a negative value to represent no limit, but be aware this could cause OOM.
              */
-            public static int COMPLETION_LENGTH_LIMIT = 1024;
+            public static int OUTPUT_MESSAGES_LENGTH_LIMIT = 1024;
 
             /**
              * The threshold for token usage to trigger content collection.
              * When set to a positive value, prompt and completion will only be collected
              * if the total token usage of the request exceeds this threshold.
-             * * This requires {@link #COLLECT_PROMPT} or {@link #COLLECT_COMPLETION} to be enabled first.
+             * * This requires {@link #COLLECT_INPUT_MESSAGES} or {@link #COLLECT_OUTPUT_MESSAGES} to be enabled first.
              * Use a negative value to disable this threshold-based filtering (collect all).
              */
             public static int CONTENT_COLLECT_THRESHOLD_TOKENS = -1;

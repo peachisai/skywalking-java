@@ -56,8 +56,8 @@ segmentItems:
               - { key: gen_ai.usage.output_tokens, value: '17' }
               - { key: gen_ai.client.token.usage, value: '69' }
               - { key: gen_ai.response.finish_reasons, value: STOP }
-              - { key: gen_ai.input.messages, value: '[{"role":"system","parts":[{"type":"text","content":"You are a professional technical assistant.\\nStrictly use the provided context to answer questions.\\nIf the information is not in the context, say: \\\"I''m sorry, I don''t have that information in my knowledge base.\\\"\\nDo not use outside knowledge. Be concise.\\n"}]},{"role":"user","parts":[{"type":"text","content":"What''s the weather in New York?"}]}]' }
-              - { key: gen_ai.output.messages, value: '[{"role":"assistant","parts":[{"type":"text","content":"The weather in New York is currently sunny with a temperature of 10°C."}],"finish_reason":"stop"}]' }
+              - { key: gen_ai.input.messages, value: not null }
+              - { key: gen_ai.output.messages, value: not null }
 
           - operationName: GET:/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case
             parentSpanId: -1

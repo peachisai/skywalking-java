@@ -140,11 +140,11 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
             return;
         }
 
-        if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_PROMPT) {
+        if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_INPUT_MESSAGES) {
             collectPrompt(span, allArguments);
         }
 
-        if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_COMPLETION) {
+        if (SpringAiPluginConfig.Plugin.SpringAi.COLLECT_OUTPUT_MESSAGES) {
             collectCompletion(span, response);
         }
     }
@@ -162,7 +162,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
 
         InputMessages inputMessages = InputMessages.fromPrompt(prompt);
         String inputMessagesJson = inputMessages.toJson();
-        int limit = SpringAiPluginConfig.Plugin.SpringAi.PROMPT_LENGTH_LIMIT;
+        int limit = SpringAiPluginConfig.Plugin.SpringAi.INPUT_MESSAGES_LENGTH_LIMIT;
         if (limit > 0 && inputMessagesJson.length() > limit) {
             inputMessagesJson = inputMessagesJson.substring(0, limit);
         }
@@ -174,7 +174,7 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
 
         OutputMessages outputMessages = OutputMessages.fromChatResponse(response);
         String outputMessagesJson = outputMessages.toJson();
-        int limit = SpringAiPluginConfig.Plugin.SpringAi.COMPLETION_LENGTH_LIMIT;
+        int limit = SpringAiPluginConfig.Plugin.SpringAi.OUTPUT_MESSAGES_LENGTH_LIMIT;
 
         if (limit > 0 && outputMessagesJson.length() > limit) {
             outputMessagesJson = outputMessagesJson.substring(0, limit);
