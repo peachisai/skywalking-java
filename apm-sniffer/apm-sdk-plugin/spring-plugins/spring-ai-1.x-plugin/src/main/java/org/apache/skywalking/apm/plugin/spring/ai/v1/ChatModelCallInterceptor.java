@@ -155,11 +155,6 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
             return;
         }
 
-        String promptText = prompt.getContents();
-        if (promptText == null) {
-            return;
-        }
-
         InputMessages inputMessages = InputMessages.fromPrompt(prompt);
         String inputMessagesJson = inputMessages.toJson();
         int limit = SpringAiPluginConfig.Plugin.SpringAi.INPUT_MESSAGES_LENGTH_LIMIT;
