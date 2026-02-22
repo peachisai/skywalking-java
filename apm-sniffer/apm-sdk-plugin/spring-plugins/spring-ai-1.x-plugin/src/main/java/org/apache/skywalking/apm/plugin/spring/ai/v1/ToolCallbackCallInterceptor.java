@@ -45,7 +45,6 @@ public class ToolCallbackCallInterceptor implements InstanceMethodsAroundInterce
 
         AbstractSpan span = ContextManager.createLocalSpan("Spring-ai/tool/execute/" + toolName);
         span.setComponent(ComponentsDefine.SPRING_AI);
-        SpanLayer.asGenAI(span);
 
         Tags.GEN_AI_TOOL_NAME.set(span, toolName);
         Tags.GEN_AI_OPERATION_NAME.set(span, Constants.EXECUTE_TOOL);
