@@ -24,10 +24,7 @@ exitOnError() {
 }
 
 exitAndClean() {
-    if [[ -n $DEBUG_MODE ]]; then
-        chmod -R a+r ${SCENARIO_HOME} 2>/dev/null
-        exit $1
-    fi
+    [[ -n $DEBUG_MODE ]] && exit $1;
 
     [[ -f ${SCENARIO_HOME}/data/actualData.yaml ]] && rm -rf ${SCENARIO_HOME}/data/actualData.yaml
     [[ -d ${LOGS_HOME} ]] && rm -rf ${LOGS_HOME}
@@ -87,7 +84,7 @@ export agent_opts="
     -Dskywalking.meter.report_interval=1
     -Xms256m -Xmx256m ${agent_opts}"
 
-bash /var/run/${SCENARIO_NAME}/${SCENARIO_START_SCRIPT} >${LOGS_HOME}/scenario.out 2>&1 &
+bash /var/run/${SCENARIO_NAME}/${SCENARIO_START_SCRIPT} 1>${LOGS_HOME}/scenario.out &
 sleep 5
 
 healthCheck ${SCENARIO_HEALTH_CHECK_URL}

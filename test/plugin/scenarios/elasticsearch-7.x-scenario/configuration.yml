@@ -22,7 +22,7 @@ environment:
 - elasticsearch.server=elasticsearch-server-7.x:9200
 dependencies:
   elasticsearch-server-7.x:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${CASE_SERVER_IMAGE_VERSION}
+    image: elasticsearch:${CASE_SERVER_IMAGE_VERSION}
     hostname: elasticsearch-server-7.x
     removeOnExit: true
     expose:
@@ -30,5 +30,6 @@ dependencies:
     environment:
     - cluster.name=docker-node
     - xpack.security.enabled=false
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    - bootstrap.memory_lock=true
+    - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
     - discovery.type=single-node
