@@ -23,7 +23,6 @@ segmentItems:
             parentSpanId: 0
             spanId: 1
             spanLayer: Unknown
-            startTime: 1771770588452
             componentId: 178
             isError: false
             spanType: Local
@@ -39,8 +38,6 @@ segmentItems:
             parentSpanId: -1
             spanId: 0
             spanLayer: Unknown
-            startTime: 1771770588450
-            endTime: 1771770588453
             componentId: 178
             isError: false
             spanType: Local
