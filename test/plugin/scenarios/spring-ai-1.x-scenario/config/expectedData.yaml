@@ -17,6 +17,40 @@ segmentItems:
   - serviceName: spring-ai-1.x-scenario
     segmentSize: gt 0
     segments:
+      - segmentId: not null
+        spans:
+          - operationName: Spring-ai/tool/execute/get_weather
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Unknown
+            startTime: 1771770588452
+            componentId: 178
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+                - { key: gen_ai.tool.name, value: get_weather }
+                - { key: gen_ai.operation.name, value: execute_tool }
+                - { key: gen_ai.tool.call.arguments, value: '{"arg0":"new york"}' }
+                - { key: gen_ai.tool.call.result, value: '"Sunny, 10°C"' }
+
+          - operationName: Spring-ai/tool/call
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Unknown
+            startTime: 1771770588450
+            endTime: 1771770588453
+            componentId: 178
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            refs:
+              - { parentEndpoint: 'GET:/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case',
+                  networkAddress: '', refType: CrossThread, parentSpanId: 4, parentTraceSegmentId: not null,
+                  parentServiceInstance: not null, parentService: spring-ai-1.x-scenario,
+                  traceId: not null }
 
       - segmentId: not null
         spans:
@@ -80,6 +114,22 @@ segmentItems:
               - { key: gen_ai.response.finish_reasons, value: STOP }
               - { key: gen_ai.input.messages, value: not null }
               - { key: gen_ai.output.messages, value: not null }
+
+          - operationName: /spring-ai-1.x-scenario/llm/v1/chat/completions
+            parentSpanId: 0
+            spanId: 5
+            spanLayer: Http
+            startTime: 1771770588332
+            endTime: 1771770588445
+            componentId: 99
+            isError: false
+            spanType: Exit
+            peer: localhost:8080
+            skipAnalysis: false
+            tags:
+              - { key: url, value: 'http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions' }
+              - { key: http.method, value: POST }
+              - { key: http.status_code, value: '200' }
 
           - operationName: GET:/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case
             parentSpanId: -1
