@@ -201,7 +201,21 @@ public class LLMMockController {
                         }
                     ],
                     "object": "chat.completion.chunk",
-                    "usage": null,
+                    "usage": {
+                        "completion_tokens": 17,
+                        "completion_tokens_details": {
+                            "accepted_prediction_tokens": 0,
+                            "audio_tokens": 0,
+                            "reasoning_tokens": 0,
+                            "rejected_prediction_tokens": 0
+                        },
+                        "prompt_tokens": 52,
+                        "prompt_tokens_details": {
+                            "audio_tokens": 0,
+                            "cached_tokens": 0
+                        },
+                        "total_tokens": 69
+                    },
                     "created": %d,
                     "system_fingerprint": null,
                     "model": "%s",
