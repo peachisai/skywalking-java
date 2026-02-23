@@ -23,6 +23,8 @@ segmentItems:
             parentSpanId: 0
             spanId: 1
             spanLayer: Unknown
+            startTime: not null
+            endTime: not null
             componentId: 178
             isError: false
             spanType: Local
@@ -38,6 +40,8 @@ segmentItems:
             parentSpanId: -1
             spanId: 0
             spanLayer: Unknown
+            startTime: not null
+            endTime: not null
             componentId: 178
             isError: false
             spanType: Local
@@ -56,6 +60,8 @@ segmentItems:
             spanId: 3
             spanLayer: Unknown
             spanType: Local
+            startTime: not null
+            endTime: not null
             tags:
               - { key: gen_ai.tool.name, value: get_weather }
               - { key: gen_ai.operation.name, value: execute_tool }
@@ -66,12 +72,16 @@ segmentItems:
             parentSpanId: 1
             spanId: 2
             spanLayer: Unknown
+            startTime: not null
+            endTime: not null
             spanType: Local
 
           - operationName: Spring-ai/openai/call
             parentSpanId: 0
             spanId: 1
             spanLayer: GenAI
+            startTime: not null
+            endTime: not null
             componentId: 173
             spanType: Exit
             peer: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions
@@ -94,6 +104,8 @@ segmentItems:
             parentSpanId: 0
             spanId: 4
             spanLayer: GenAI
+            startTime: not null
+            endTime: not null
             componentId: 173
             spanType: Exit
             peer: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions
@@ -116,8 +128,8 @@ segmentItems:
             parentSpanId: 0
             spanId: 5
             spanLayer: Http
-            startTime: 1771770588332
-            endTime: 1771770588445
+            startTime: not null
+            endTime: not null
             componentId: 99
             isError: false
             spanType: Exit
@@ -132,6 +144,8 @@ segmentItems:
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
+            startTime: not null
+            endTime: not null
             spanType: Entry
             componentId: 1
             tags:
