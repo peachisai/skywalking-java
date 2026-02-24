@@ -120,7 +120,6 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
             if (finalResponse != null && finalResponse.getMetadata() != null) {
                 ChatResponseMetadata metadata = finalResponse.getMetadata();
                 collectResponseTags(span, metadata, state);
-                collectUsageTags(span, metadata.getUsage());
                 totalTokens = collectUsageTags(span, metadata.getUsage());
             }
 
