@@ -115,12 +115,13 @@ segmentItems:
               - { key: gen_ai.request.model, value: gpt-4.1-2025-04-14 }
               - { key: gen_ai.request.temperature, value: '0.7' }
               - { key: gen_ai.request.top_p, value: '0.9' }
-              - { key: gen_ai.response.id, value: 'chatcmpl-CyJXJt7gxwDgz' }
+              - { key: gen_ai.stream.ttfr, value: not null }
+              - { key: gen_ai.response.id, value: 'chatcmpl-fc1b64d3' }
               - { key: gen_ai.response.model, value: gpt-4.1-2025-04-14 }
-              - { key: gen_ai.usage.input_tokens, value: '52' }
-              - { key: gen_ai.usage.output_tokens, value: '17' }
-              - { key: gen_ai.client.token.usage, value: '69' }
               - { key: gen_ai.response.finish_reasons, value: STOP }
+              - { key: gen_ai.usage.input_tokens, value: '104' }
+              - { key: gen_ai.usage.output_tokens, value: '34' }
+              - { key: gen_ai.client.token.usage, value: '138' }
               - { key: gen_ai.input.messages, value: not null }
               - { key: gen_ai.output.messages, value: not null }
 

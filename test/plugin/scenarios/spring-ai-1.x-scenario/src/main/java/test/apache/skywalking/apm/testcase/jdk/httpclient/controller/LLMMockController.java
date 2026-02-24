@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Instant;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/llm")
@@ -49,7 +48,7 @@ public class LLMMockController {
             response.setHeader("Connection", "keep-alive");
 
             PrintWriter writer = response.getWriter();
-            String id = "chatcmpl-" + UUID.randomUUID();
+            String id = "chatcmpl-fc1b64d3";
             long created = Instant.now().getEpochSecond();
             String model = "gpt-4.1-2025-04-14";
 
@@ -59,11 +58,7 @@ public class LLMMockController {
                     writeStreamChunk(writer, id, created, model, "{\"role\":\"assistant\"}", "null");
 
                     int len = fullContent.length();
-                    String[] parts = {
-                            fullContent.substring(0, len / 3),
-                            fullContent.substring(len / 3, len * 2 / 3),
-                            fullContent.substring(len * 2 / 3)
-                    };
+                    String[] parts = {fullContent.substring(0, len / 3), fullContent.substring(len / 3, len * 2 / 3), fullContent.substring(len * 2 / 3)};
 
                     for (String part : parts) {
                         Thread.sleep(50);
