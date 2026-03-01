@@ -36,5 +36,4 @@ dependencies:
     environment:
       - autoCreateTopicEnable=true
     depends_on:
-      namesrv:
-        condition: service_healthy
+      - namesrv
