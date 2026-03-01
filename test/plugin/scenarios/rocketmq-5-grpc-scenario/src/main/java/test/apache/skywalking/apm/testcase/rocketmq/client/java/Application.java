@@ -29,6 +29,7 @@ public class Application {
             SpringApplication.run(Application.class, args);
         } catch (Exception e) {
             // Never do this
+            throw e
         }
     }
 }
